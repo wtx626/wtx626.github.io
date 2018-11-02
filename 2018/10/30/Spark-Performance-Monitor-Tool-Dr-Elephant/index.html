@@ -103,7 +103,7 @@
 <meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T03:04:36.614Z">
+<meta property="og:updated_time" content="2018-11-02T03:39:08.796Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
@@ -518,6 +518,7 @@
 <li><strong>runtimeSeverities</strong></li>
 </ul>
 <p>每个Stage运行时间和Executor的加权averageExecutorRuntime</p>
+<p>$$<br>averageExecutorRuntime=\frac{stage.runtime}{numofexecutor}<br>$$</p>
 <table>
 <thead>
 <tr>
@@ -541,7 +542,7 @@
 </tbody>
 </table>
 <h3 id="Spark-Job-Metrics"><a href="#Spark-Job-Metrics" class="headerlink" title="Spark Job Metrics"></a>Spark Job Metrics</h3><p>计算公式<br>$$<br>severity= \max{(jobFailureRateSeverity +: taskFailureRateSeverities): _*}<br>$$</p>
-
+<h2 id="Executor-GC"><a href="#Executor-GC" class="headerlink" title="Executor GC"></a>Executor GC</h2>
       
     </div>
     
@@ -750,7 +751,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Executor-Metrics"><span class="nav-number">3.2.</span> <span class="nav-text">Spark Executor Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Stage-Metrics"><span class="nav-number">3.3.</span> <span class="nav-text">Spark Stage Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Job-Metrics"><span class="nav-number">3.4.</span> <span class="nav-text">Spark Job Metrics</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Executor-Metrics"><span class="nav-number">3.2.</span> <span class="nav-text">Spark Executor Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Stage-Metrics"><span class="nav-number">3.3.</span> <span class="nav-text">Spark Stage Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Job-Metrics"><span class="nav-number">3.4.</span> <span class="nav-text">Spark Job Metrics</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Executor-GC"><span class="nav-number">4.</span> <span class="nav-text">Executor GC</span></a></li></ol></div>
             
 
           </div>
