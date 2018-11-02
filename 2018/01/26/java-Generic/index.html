@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;emsp;&amp;emsp;项目中需要做到对不同流量和日志实现序列化和反序列化，每种流量和日志格式都定义为一种java bean对象类型，通常我们在序列化和反序列时会针对不同的对象写一对特定的序列化和反序列化方法，但这样重复代码太多，故考虑将序列化和反序列化方法泛型化。 基本知识&amp;emsp;&amp;emsp;Avro 支持多种语言, 如 C, C++, C#, Java, PHP, Python 和 Rub">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java方法泛型化在avro序列化与反序列化的应用">
+<meta property="og:url" content="https://github.com/wtx626/2018/01/26/java-Generic/index.html">
+<meta property="og:site_name" content="Dr. Elephant">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;项目中需要做到对不同流量和日志实现序列化和反序列化，每种流量和日志格式都定义为一种java bean对象类型，通常我们在序列化和反序列时会针对不同的对象写一对特定的序列化和反序列化方法，但这样重复代码太多，故考虑将序列化和反序列化方法泛型化。 基本知识&amp;emsp;&amp;emsp;Avro 支持多种语言, 如 C, C++, C#, Java, PHP, Python 和 Rub">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/26/java-Generic/1.png">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/26/java-Generic/2.png">
+<meta property="og:updated_time" content="2018-11-02T02:11:11.719Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java方法泛型化在avro序列化与反序列化的应用">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;项目中需要做到对不同流量和日志实现序列化和反序列化，每种流量和日志格式都定义为一种java bean对象类型，通常我们在序列化和反序列时会针对不同的对象写一对特定的序列化和反序列化方法，但这样重复代码太多，故考虑将序列化和反序列化方法泛型化。 基本知识&amp;emsp;&amp;emsp;Avro 支持多种语言, 如 C, C++, C#, Java, PHP, Python 和 Rub">
+<meta name="twitter:image" content="https://github.com/wtx626/2018/01/26/java-Generic/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/wtx626/2018/01/26/java-Generic/"/>
+
+
+
+
+
+  <title>java方法泛型化在avro序列化与反序列化的应用 | Dr. Elephant</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dr. Elephant</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2018/01/26/java-Generic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tianxiong Wu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dr. Elephant">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java方法泛型化在avro序列化与反序列化的应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T12:27:45+08:00">
+                2018-01-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp;项目中需要做到对不同流量和日志实现序列化和反序列化，每种流量和日志格式都定义为一种java bean对象类型，通常我们在序列化和反序列时会针对不同的对象写一对特定的序列化和反序列化方法，但这样重复代码太多，故考虑将序列化和反序列化方法泛型化。</p>
+<h3 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h3><p>&emsp;&emsp;Avro 支持多种语言, 如 C, C++, C#, Java, PHP, Python 和 Ruby. 它使用 JSON 来定义 Schema, 通过工具可以由 Schema 生成相应语言的数据对象, 比如 Java 的  avro-tools.jar. 这样可以在跨进程跨语言透明的实现为对象交换.<br>&emsp;&emsp;下面举一个简单的例子</p>
+<h4 id="定义一个模式文件"><a href="#定义一个模式文件" class="headerlink" title="定义一个模式文件"></a>定义一个模式文件</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"namespace"</span>: <span class="string">"cc.unmi.data"</span>,</div><div class="line">  <span class="attr">"type"</span>: <span class="string">"record"</span>,</div><div class="line">  <span class="attr">"name"</span>: <span class="string">"User"</span>,</div><div class="line">  <span class="attr">"fields"</span>: [</div><div class="line">    &#123;<span class="attr">"name"</span>: <span class="string">"name"</span>, <span class="attr">"type"</span>: <span class="string">"string"</span>&#125;,</div><div class="line">    &#123;<span class="attr">"name"</span>: <span class="string">"address"</span>, <span class="attr">"type"</span>: [<span class="string">"string"</span>, <span class="string">"null"</span>]&#125;</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这里定义了User对象，假设文件名为user.avsc</p>
+<h4 id="使用avro-tool生成java对象"><a href="#使用avro-tool生成java对象" class="headerlink" title="使用avro-tool生成java对象"></a>使用avro-tool生成java对象</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">avro-tool-1.8.1.jar compile schema /path/to/user.avsc /path/generate</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;生成的对象中包含完整的 Schema 定义内容, 可由静态方法 getClassSchema() 和实例方法 getSchema() 获得相应的 Schema, 所以拥有了这个对象类时就不再需要 user.avsc 文件了. 在它的父类 SpecificRecordBase 类中定义了抽象方法 getSchema()。<br>&emsp;&emsp;接下来我们可以看看在泛型化和非泛型时的处理方式。</p>
+<h3 id="未泛型化时的做法"><a href="#未泛型化时的做法" class="headerlink" title="未泛型化时的做法"></a>未泛型化时的做法</h3><h4 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h4><p>&emsp;&emsp;下面的代码把一个 User 对象序列化为字节数组<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">byte</span>[] serializeUser(User user) <span class="keyword">throws</span> IOException &#123;</div><div class="line">    DatumWriter&lt;User&gt; userDatumWriter = <span class="keyword">new</span> SpecificDatumWriter&lt;&gt;(User.class);</div><div class="line">    ByteArrayOutputStream outputStream = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">    BinaryEncoder binaryEncoder = EncoderFactory.get().directBinaryEncoder(outputStream, <span class="keyword">null</span>);</div><div class="line">    userDatumWriter.write(user, binaryEncoder);</div><div class="line">    <span class="keyword">return</span> outputStream.toByteArray();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> User <span class="title">deserializeUser</span><span class="params">(<span class="keyword">byte</span>[] data)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    DatumReader&lt;User&gt; userDatumReader = <span class="keyword">new</span> SpecificDatumReader&lt;&gt;(User.class);</div><div class="line">    BinaryDecoder binaryEncoder = DecoderFactory.get().directBinaryDecoder(<span class="keyword">new</span> ByteArrayInputStream(data), <span class="keyword">null</span>);</div><div class="line">    <span class="keyword">return</span> userDatumReader.read(<span class="keyword">new</span> User(), binaryEncoder);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从上面方法输出的字节数组中反序列化出相等的对象来,  userDatumReader.read(new User(), binaryEncoder) 执行后的返回值与被更新后的第一个参数是一样的, 所以这个方法要是能写成 reutnr userDatumReader.read(User.class, binaryEncoder); 会好看些。</p>
+<p>&emsp;&emsp;但是这种方法存在的问题也显而易见，当我们的对象类型很多时，我们就得为每一种类型写一个序列化和反序列化的方法，实现起来比较冗余繁杂，所以推荐使用下面的泛型化方法。</p>
+<h3 id="泛型化时的做法"><a href="#泛型化时的做法" class="headerlink" title="泛型化时的做法"></a>泛型化时的做法</h3><h4 id="java中的泛型方法"><a href="#java中的泛型方法" class="headerlink" title="java中的泛型方法"></a>java中的泛型方法</h4><p>&emsp;&emsp;泛型方法，是在调用方法的时候指明泛型的具体类型。<br>&emsp;&emsp;定义泛型方法语法格式如下：<br><img src="./1.png" alt=""><br>&emsp;&emsp;调用泛型方法语法格式如下：<br><img src="./2.png" alt=""><br>&emsp;&emsp;说明一下，定义泛型方法时，必须在返回值前边加一个<t>，来声明这是一个泛型方法，持有一个泛型T，然后才可以用泛型T作为方法的返回值。<br>&emsp;&emsp;Class<t>的作用就是指明泛型的具体类型，而Class<t>类型的变量c，可以用来创建泛型类的对象。<br>&emsp;&emsp;为什么要用变量c来创建对象呢？既然是泛型方法，就代表着我们不知道具体的类型是什么，也不知道构造方法如何，因此没有办法去new一个对象，但可以利用变量c的newInstance方法去创建对象，也就是利用反射创建对象。<br>&emsp;&emsp;泛型方法要求的参数是Class<t>类型，而Class.forName()方法的返回值也是Class<t>，因此可以用Class.forName()作为参数。其中，forName()方法中的参数是何种类型，返回的Class<t>就是何种类型。在本例中，forName()方法中传入的是User类的完整路径，返回的是Class<user>类型的对象，调用泛型方法时，变量c的类型就是Class<user>，泛型方法中的泛型T就被指明为User，变量obj的类型为User。<br>&emsp;&emsp;当然，泛型方法不是仅仅可以有一个参数Class<t>，可以根据需要添加其他参数。<br>&emsp;&emsp;为什么要使用泛型方法呢？因为泛型类要在实例化的时候就指明类型，如果想换一种类型，不得不重新new一次，可能不够灵活；而泛型方法可以在调用的时候指明类型，更加灵活。</t></user></user></t></t></t></t></t></t></p>
+<p><strong>针对上面的序列化和反序列化，我们的泛型版本如下所示</strong></p>
+<h4 id="序列化-1"><a href="#序列化-1" class="headerlink" title="序列化"></a>序列化</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment">     * 通用对象序列化工具方法，将对象T序列化为字节数组</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> c 待序列化的对象T实例</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 序列化之后的字节数组</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> &lt;T&gt; <span class="keyword">byte</span>[] serializer(T c) <span class="keyword">throws</span> IOException, IllegalAccessException, InstantiationException &#123;</div><div class="line">        DatumWriter&lt;T&gt; datumWriter = <span class="keyword">new</span> SpecificDatumWriter(c.getClass());</div><div class="line">        ByteArrayOutputStream outputStream = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">        BinaryEncoder binaryEncoder = EncoderFactory.get().directBinaryEncoder(outputStream, <span class="keyword">null</span>);</div><div class="line">        datumWriter.write(c, binaryEncoder);</div><div class="line">        <span class="keyword">return</span> outputStream.toByteArray();</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h4 id="反序列化-1"><a href="#反序列化-1" class="headerlink" title="反序列化"></a>反序列化</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment">     * 通用对象反序列化工具，将字节数组反序列为相应的对象</span></div><div class="line"><span class="comment">     *</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> data 序列化后的字节数组</span></div><div class="line"><span class="comment">     * <span class="doctag">@param</span> c    字节数据的对象类型，如WAFsyslog、RadiusLog</span></div><div class="line"><span class="comment">     * <span class="doctag">@return</span> 返回反序列化后的对象</span></div><div class="line"><span class="comment">     */</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">deserializer</span><span class="params">(<span class="keyword">byte</span>[] data, Class&lt;T&gt; c)</span> <span class="keyword">throws</span> IOException, IllegalAccessException, InstantiationException </span>&#123;</div><div class="line">        DatumReader&lt;T&gt; DatumReader = <span class="keyword">new</span> SpecificDatumReader(c);</div><div class="line">        BinaryDecoder binaryEncoder = DecoderFactory.get().directBinaryDecoder(<span class="keyword">new</span> ByteArrayInputStream(data), <span class="keyword">null</span>);</div><div class="line">        <span class="keyword">return</span> DatumReader.read(c.newInstance(), binaryEncoder);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;通过泛型化，我们可以只需要写一组序列化和反序列化函数，待运行时传入具体的对象类型，从而完成序列化和反序列化，使用此种模式，我们不需要为每个特定的对象类型生成序列化和反序列化函数，大大降低了代码的冗余性。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/04/Spark-Memory-Manage/" rel="next" title="Spark内存管理总结">
+                <i class="fa fa-chevron-left"></i> Spark内存管理总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/" rel="prev" title="Spark Performance Monitor Tool Dr.Elephant">
+                Spark Performance Monitor Tool Dr.Elephant <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/upload/photo.jpg"
+               alt="Tianxiong Wu" />
+          <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wtx626" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.facebook.com/wtx626" target="_blank" title="FB Page">
+                  
+                    <i class="fa fa-fw fa-facebook"></i>
+                  
+                    
+                      FB Page
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/6756282/wu-tianxiong" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3031214792/profile?rightmod=1&wvr=6&mod=personinfo" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本知识"><span class="nav-number">1.</span> <span class="nav-text">基本知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义一个模式文件"><span class="nav-number">1.1.</span> <span class="nav-text">定义一个模式文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用avro-tool生成java对象"><span class="nav-number">1.2.</span> <span class="nav-text">使用avro-tool生成java对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未泛型化时的做法"><span class="nav-number">2.</span> <span class="nav-text">未泛型化时的做法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#序列化"><span class="nav-number">2.1.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反序列化"><span class="nav-number">2.2.</span> <span class="nav-text">反序列化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泛型化时的做法"><span class="nav-number">3.</span> <span class="nav-text">泛型化时的做法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#java中的泛型方法"><span class="nav-number">3.1.</span> <span class="nav-text">java中的泛型方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#序列化-1"><span class="nav-number">3.2.</span> <span class="nav-text">序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反序列化-1"><span class="nav-number">3.3.</span> <span class="nav-text">反序列化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tianxiong Wu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

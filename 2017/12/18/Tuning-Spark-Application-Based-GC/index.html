@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spark tuning," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="概述Apache Spark 由于其卓越的性能，丰富的分析和计算库，得到学术界和工业界的广泛使用。与大数据生态圈其他工具一样，Spark也是基于JVM。由于Spark会存储大量的数据在内存中，它主要依靠Java的内存管理和GC。当然Spark在未来也会通过像Tungsten 这样的产品来对内存进行简单的优化，但是通过Java GC层面的调优可以更快的提高Spark应用程序的性能。 Spark和GC">
+<meta name="keywords" content="Spark tuning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于GC的Spark应用程序优化">
+<meta property="og:url" content="https://github.com/wtx626/2017/12/18/Tuning-Spark-Application-Based-GC/index.html">
+<meta property="og:site_name" content="Dr. Elephant">
+<meta property="og:description" content="概述Apache Spark 由于其卓越的性能，丰富的分析和计算库，得到学术界和工业界的广泛使用。与大数据生态圈其他工具一样，Spark也是基于JVM。由于Spark会存储大量的数据在内存中，它主要依靠Java的内存管理和GC。当然Spark在未来也会通过像Tungsten 这样的产品来对内存进行简单的优化，但是通过Java GC层面的调优可以更快的提高Spark应用程序的性能。 Spark和GC">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-11.35.50-AM-1024x302.png">
+<meta property="og:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-11.38.37-AM.png">
+<meta property="og:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.04.24-PM.png">
+<meta property="og:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.22.13-PM.png">
+<meta property="og:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.22.45-PM.png">
+<meta property="og:updated_time" content="2018-11-02T02:11:11.719Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于GC的Spark应用程序优化">
+<meta name="twitter:description" content="概述Apache Spark 由于其卓越的性能，丰富的分析和计算库，得到学术界和工业界的广泛使用。与大数据生态圈其他工具一样，Spark也是基于JVM。由于Spark会存储大量的数据在内存中，它主要依靠Java的内存管理和GC。当然Spark在未来也会通过像Tungsten 这样的产品来对内存进行简单的优化，但是通过Java GC层面的调优可以更快的提高Spark应用程序的性能。 Spark和GC">
+<meta name="twitter:image" content="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-11.35.50-AM-1024x302.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/wtx626/2017/12/18/Tuning-Spark-Application-Based-GC/"/>
+
+
+
+
+
+  <title>基于GC的Spark应用程序优化 | Dr. Elephant</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dr. Elephant</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2017/12/18/Tuning-Spark-Application-Based-GC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tianxiong Wu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dr. Elephant">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于GC的Spark应用程序优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-18T20:59:20+08:00">
+                2017-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Apache Spark 由于其卓越的性能，丰富的分析和计算库，得到学术界和工业界的广泛使用。与大数据生态圈其他工具一样，Spark也是基于JVM。由于Spark会存储大量的数据在内存中，它主要依靠Java的内存管理和GC。当然Spark在未来也会通过像Tungsten 这样的产品来对内存进行简单的优化，但是通过Java GC层面的调优可以更快的提高Spark应用程序的性能。</p>
+<h1 id="Spark和GC介绍"><a href="#Spark和GC介绍" class="headerlink" title="Spark和GC介绍"></a>Spark和GC介绍</h1><p>随着Spark在工业中的广泛应用，Spark应用程序的稳定性和性能调整问题越来越成为人们关注的话题。 由于Spark以内存为中心的方法，通常使用100GB或更多内存作为堆空间，这在传统的Java应用程序中很少见到。垃圾收集需要很长时间，导致程序经历很长的延迟，甚至在严重的情况下崩溃。<br>Java应用程序通常使用两种垃圾收集策略之一：并发标记扫描（CMS）垃圾收集和ParallelOld 垃圾收集。CMS目的在于高响应，低延迟，ParallelOld 根据注重搞吞吐率，适合于后台计算。但是两种收集器策略都会有性能瓶颈，CMS不执行压缩，而ParallelOld只执行整个堆的压缩，这将导致大量的暂停时间。所以下面有个简单的选择策略，对于实时响应比较高的应用，选择CMS，而对于后台计算程序，使用Parallel GC。<br>Spark框架同时支持Streaming计算和批处理，如何找到最佳的收集策略？HotSpot JVM在1.7版本中引入了G1收集器，G1收集器被视为HotSpot虚拟机的一个重要进化特征，是一款面向服务端应用的垃圾收集器，最重要的一点是，G1收集器的目标是同时实现高吞吐率和低延时。</p>
+<h1 id="Java-GC工作介绍"><a href="#Java-GC工作介绍" class="headerlink" title="Java GC工作介绍"></a>Java GC工作介绍</h1><p>在传统的JVM内存管理中，JVM堆会被分为年轻代和老年代。年轻代由三块区域组成，eden、from和to，我们通过new创建的对象将被初试的分配到eden区域。每一次发生minor GC，JVM将会复制eden区域中存活的对象到suvivor中的空闲的区域，from和to区域中一块用来保存对象，一块为空用来下次GC。如果在多次minor GC中还存活的对象，将会被移到老年代。如果老年代也满了，将会执行一次major GC来暂停所有的线程，重新组织和移动老年代里的对象。这个暂停所有线程即是”Stop-The-World”。JVM传统堆区域内存块如下图所示。<img src="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-11.35.50-AM-1024x302.png" alt=""><br>Java新一代的G1收集器完全改变了传统的方式。使用G1收集器时，Java堆的内存布局就与其他收集器有很大差别，它将整个Java堆划分为多个大小相对的独立区域(Region)，虽然还保留有新生代和老年代的概念，但新生代和老年代不在是物理隔离的了，它们都是一部分Region的集合。<br>当一个对象被创建，它会被分配到一块可用的region。<br>当region满的时候，JVM创建新的region来存储对象。<br>当发生minor GC，G1复制存活的对象从堆中一个或多个region到堆的一个单region，并且选择几个空闲的region作为Eden区域。<br>G1收集器中仅仅当所有的region都有存活对象并且再也没有空闲的region可以找到的时候才会发生full GC。<br>G1收集器使用Remembered Set来标记存活对象。G1中每个region都有一个与之对应的RSet，虚拟机发现程序在对应用类型的数据进行写操作时，会产生一个write barrier暂时中断写操作，检查引用的对象是否处于不同的region之中，如果是，便通过CardTable把相关信息记录到被引用对象所属的region的RSet中。当进行内存回收时，在GC根节点的枚举范围中加入RSet即可保证不对全堆扫描也不会有遗漏。JVM G1堆结构如图所示<img src="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-11.38.37-AM.png" alt=""><br>与旧的垃圾收集器不同，我们通常发现G1收集器的一个很好的起点是不进行任何调整。 所以我们建议只使用默认设置，并通过-XX：+ UseG1GC选项启用G1。 我们发现一个有用的调整是，当应用程序使用多个线程时，最好使用-XX：-ResizePLAB关闭PLAB（）调整大小，并避免大量线程通信导致的性能下降。</p>
+<h1 id="Spark内存管理"><a href="#Spark内存管理" class="headerlink" title="Spark内存管理"></a>Spark内存管理</h1><p>Spark中的核心抽象是RDD，RDD的创建和缓存都与内存消耗密切相关。Spark允许用户持久化存储数据在重用的应用上，这样可以避免重复计算带来的负载。持久化RDD的一种方式是在JVM中堆中缓存全部或者部分数据。Spark的executor将JVM堆空间分为两部分：一部分用于存储由Spark应用程序持久缓存到内存中的数据; 剩余部分用作JVM堆空间，负责RDD转换期间的内存消耗。我们可以通过spark.storage.memoryFraction参数来调整存储空间在整块堆中的比例。<br>当观察到由GC延迟导致的效率下降时，我们应该首先检查并确保Spark应用程序有效地使用有限的内存空间。 RDD占用的内存空间越少，为程序执行留下的堆空间就越多，这就提高了GC的效率; 相反，由于老年代中的大量缓冲对象，RDD的过度内存消耗导致显着的性能损失。<br>下面的例子，用户有一个基于Spark的Bagel组件的应用程序，它执行简单的迭代计算。 一个superstep（迭代）的结果取决于前一个superstep的结果，所以每个superstep的结果将被保存在内存空间中。 在程序执行期间，我们观察到当迭代次数增加时，进程使用的内存空间迅速增长，导致GC恶化。 当我们仔细观察Bagel时，我们发现它将内存中每个superstep的RDD缓存起来，而不会随着时间的推移释放它们，即使它们在一次迭代之后不会被使用。 这导致内存消耗增长，触发更多的GC尝试。 我们在SPARK-2661中删除了这个不必要的缓存。 在这个修改缓存之后，RDD大小在三次迭代之后稳定，并且缓存空间现在被有效地控制（如下表所示）。 因此，GC效率大大提高，程序总运行时间缩短了10％〜20％。</p>
+<table>
+<thead>
+<tr>
+<th>迭代次数</th>
+<th style="text-align:center">每次迭代缓存大小</th>
+<th style="text-align:center">优化前总缓存大小</th>
+<th style="text-align:center">优化后缓存大小</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始</td>
+<td style="text-align:center">4.3GB</td>
+<td style="text-align:center">4.3GB</td>
+<td style="text-align:center">4.3GB</td>
+</tr>
+<tr>
+<td>1</td>
+<td style="text-align:center">8.2GB</td>
+<td style="text-align:center">12.5GB</td>
+<td style="text-align:center">8.2GB</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:center">98.8GB</td>
+<td style="text-align:center">111.3GB</td>
+<td style="text-align:center">98.8GB</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:center">90.8GB</td>
+<td style="text-align:center">202.1GB</td>
+<td style="text-align:center">90.8GB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="小节"><a href="#小节" class="headerlink" title="小节"></a>小节</h2><p>当观察到GC过于频繁或持久时，可能表明内存空间未被Spark进程或应用程序有效使用。 可以通过显式清理缓存的RDD来提高性能。</p>
+<h2 id="垃圾收集器选择"><a href="#垃圾收集器选择" class="headerlink" title="垃圾收集器选择"></a>垃圾收集器选择</h2><p>如果我们的应用程序想要高效地使用内存，我们第一步可以通过选择垃圾收集器来进行优化。下面是我所做的实验。</p>
+<ul>
+<li>4个节点</li>
+<li>executor 88GB堆大小</li>
+</ul>
+<h2 id="Parallel-GC"><a href="#Parallel-GC" class="headerlink" title="Parallel GC"></a>Parallel GC</h2><p>首先使用默认的 Spark Parallel GC，由于Spark应用程序的内存开销相对较大，大多数对象在相当短的生命周期内无法回收，因此Parallel GC经常发生full GC中，每次出现性能都会下降。并且更致命的是，Parallel GC只提供非常少的垃圾收集器参数来进行调优，仅仅能使用一些非常基础的参数，像</p>
+<ul>
+<li>不同代的比例</li>
+<li>晋升到老年代对象的年龄大小</li>
+</ul>
+<p>由于这些调整策略只推迟了full GC，因此Parallel GC调整对于长时间运行的应用程序几乎没有帮助。</p>
+<h2 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h2><p>CMS垃圾收集器无法消减Spark应用程序中的full GC，并且，CMS的full GC停顿时间比Parallel GC，会大大降低程序的吞吐率。</p>
+<h2 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h2><p>接下来，我们用默认的G1 GC配置运行我们的应用程序。 令我们惊讶的是，G1 GC也给出了不能接受的full GC（参见表中的“CPU利用率”，显然，Job 3暂停了将近100秒），并且长时间的停顿大大拖累了整个应用程序的运行。<br><img src="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.04.24-PM.png" alt=""></p>
+<p>如下表所示，虽然总的运行时间略长于平行GC，但是G1 GC的性能略好于CMS GC。</p>
+<table>
+<thead>
+<tr>
+<th>垃圾收集器</th>
+<th style="text-align:center">运行时间（88GB堆）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parallel GC</td>
+<td style="text-align:center">6.5min</td>
+</tr>
+<tr>
+<td>CMS GC</td>
+<td style="text-align:center">9min</td>
+</tr>
+<tr>
+<td>G1 GC</td>
+<td style="text-align:center">7.6min</td>
+</tr>
+</tbody>
+</table>
+<h1 id="通过GC日志来对G1进行优化"><a href="#通过GC日志来对G1进行优化" class="headerlink" title="通过GC日志来对G1进行优化"></a>通过GC日志来对G1进行优化</h1><p>首先，我们在Spark JVM里设置打印相应的GC信息，<code>spark.executor.extraJavaOptions</code> GC选项如下所示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">-XX:+PrintFlagsFinal -XX:+PrintReferenceGC -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintAdaptiveSizePolicy -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark</div></pre></td></tr></table></figure></p>
+<p>GC日志如下所示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[Eden: 160.0M(3904.0M)-&gt;0.0B(4480.0M) Survivors: 576.0M-&gt;0.0B Heap: 87.7G(88.0G)-&gt;87.7G(88.0G)]</div><div class="line"></div><div class="line">[Times: user=1.69 sys=0.24, real=1.05 secs]</div><div class="line"></div><div class="line">760.981: [G1Ergonomics (Heap Sizing) attempt heap expansion, reason: allocation request failed, allocation request: 90128 bytes]</div><div class="line"></div><div class="line">760.981: [G1Ergonomics (Heap Sizing) expand the heap, requested expansion amount: 33554432 bytes, attempted expansion amount: 33554432 bytes]</div><div class="line"></div><div class="line">760.981: [G1Ergonomics (Heap Sizing) did not expand the heap, reason: heap expansion operation failed]</div><div class="line"></div><div class="line">760.981: [Full GC 87G-&gt;36G(88G), 67.4381220 secs]</div></pre></td></tr></table></figure></p>
+<p>我们从上面可以看出，full gc会导致最大的性能损失。当G1 GC收集器试图为某些区域收集垃圾时，它无法找到可以复制活动对象的空闲区域。 这种情况被称为撤离失败，通常导致full GC。 很明显，G1 GC中的full GC比Parallel GC中的GC要差，所以我们必须尽量避免full GC，以获得更好的性能。 为了避免G1 GC中的full GC，有两种常用的方法：</p>
+<ol>
+<li>减少<code>InitiatingHeapOccupancyPercent</code>选项的值（默认值为45），让G1 GC在较早的时间开始初始并发标记，这样我们更有可能避免完整的GC。</li>
+<li>增加<code>ConcGCThreads</code>选项的值，使并发标记具有更多线程，从而加快并发标记阶段。 此选项也可能会占用一些有效的工作线程资源，具体取决于您的工作负载CPU利用率。</li>
+</ol>
+<p>对这两个选项的调整，可以最大化的减少full GC的发生。在full GC被消除后，性能得到了明显的提升。但是，我们在GC期间仍然发现了很长时间的停顿。 在进一步的调查中，我们在日志中发现了以下事件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">280.008: [G1Ergonomics (Concurrent Cycles) request concurrent cycle initiation, reason: occupancy higher than threshold, occupancy: 62344134656 bytes, allocation request: 46137368 bytes, threshold: 42520176225 bytes (45.00 %), <span class="built_in">source</span>: concurrent humongous allocation]</div></pre></td></tr></table></figure></p>
+<p>从上面可以看到又大对象，其大小为标准region的一半或者更大，G1 GC将把这些对象中的每一个放在连续的一组区域中。 而且由于复制这些对象会消耗大量的资源，所以大量的对象直接从老一代中分配出来（绕过所有年轻的GC），然后分类成大的区域。如果有这么多的大对象，堆就会很快被填满，回收它们代价太高。 即使有了修复（它们的确提高了大量回收大量对象的效率），但是连续区域的分配仍然比较昂贵（特别是在遇到严重的堆碎片时），所以我们希望避免创建这种大小的对象。 我们可以增加<code>G1HeapRegionSize</code>的值，以减少创建巨大区域的可能性，但是如果我们使用相对较大的堆，默认值已经在最大32M的大小。 这意味着我们只能分析程序来找到这些对象，并尽量减少它们的创建。否则，可能会导致更多的并发标记，此后，您需要仔细调整混合GC（例如，<code>-XX：G1HeapWastePercent -XX：G1MixedGCLiveThresholdPercent</code>），以避免长时间混合GC暂停（由许多大对象引起）。<br>接下来，我们可以分析从循环开始到混合GC结束的单个GC循环的间隔。如果时间太长，可以考虑增加ConcGCThreads的值，但是请注意这会占用更多的CPU资源。G1 GC也有减少STW停顿时间的方法，以便在垃圾收集的同时进行更多的工作。 如上所述，G1 GC维护每个区域的RSet以跟踪外部区域对给定区域的对象引用，并且G1收集器在STW阶段和并发阶段更新RSets。 如果您正在寻求通过G1 GC降低STW暂停的长度，则可以在增加<code>G1ConcRefinementThreads</code>的值的同时减小<code>G1RSetUpdatingPauseTimePercent</code>的值。 <code>G1RSetUpdatingPauseTimePercent</code>选项用于指定所需的RSets更新时间占总STW时间的比例，默认为10％，<code>G1ConcRefinementThreads</code>用于定义在程序运行期间维护RSets的线程数。 通过调整这两个选项，我们可以将更多的RSets负载从STW阶段转移到并发阶段。<br>另外，对于长时间运行的应用程序，我们使用<code>AlwaysPreTouch</code>选项，因此JVM在启动时将所有需要的内存应用到OS，并避免动态应用程序。 这样可以延长启动时间，从而提高运行时性能。</p>
+<p>最终，经过几轮GC参数调整，我们得到了下图的结果。与之前的结果相比，我们最终获得了更满意的运行效率。<br><img src="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.22.13-PM.png" alt=""><br><img src="https://databricks.com/wp-content/uploads/2015/05/Screen-Shot-2015-05-26-at-3.22.45-PM.png" alt=""></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>建议使用G1收集器。通过观察分析log文件，使用调优后，成功缩短了4.3分钟的应用程序运行时间。 与调试前的运行时间相比，性能提高了1.7倍; 与Parallel GC相比，增加1.5倍或更少。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spark-tuning/" rel="tag"># Spark tuning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/31/sandbox-hdp-Docker问题总结/" rel="next" title="安装sandbox-hdp Docker问题总结">
+                <i class="fa fa-chevron-left"></i> 安装sandbox-hdp Docker问题总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/20/Tune-Your-Apache-Spark-Jobs-1/" rel="prev" title="从开发层面上优化Spark作业">
+                从开发层面上优化Spark作业 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/upload/photo.jpg"
+               alt="Tianxiong Wu" />
+          <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
+           
+              <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wtx626" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.facebook.com/wtx626" target="_blank" title="FB Page">
+                  
+                    <i class="fa fa-fw fa-facebook"></i>
+                  
+                    
+                      FB Page
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/6756282/wu-tianxiong" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/3031214792/profile?rightmod=1&wvr=6&mod=personinfo" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                    
+                      Weibo
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark和GC介绍"><span class="nav-number">2.</span> <span class="nav-text">Spark和GC介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-GC工作介绍"><span class="nav-number">3.</span> <span class="nav-text">Java GC工作介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark内存管理"><span class="nav-number">4.</span> <span class="nav-text">Spark内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小节"><span class="nav-number">4.1.</span> <span class="nav-text">小节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾收集器选择"><span class="nav-number">4.2.</span> <span class="nav-text">垃圾收集器选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parallel-GC"><span class="nav-number">4.3.</span> <span class="nav-text">Parallel GC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMS"><span class="nav-number">4.4.</span> <span class="nav-text">CMS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#G1收集器"><span class="nav-number">4.5.</span> <span class="nav-text">G1收集器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#通过GC日志来对G1进行优化"><span class="nav-number">5.</span> <span class="nav-text">通过GC日志来对G1进行优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">5.1.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tianxiong Wu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

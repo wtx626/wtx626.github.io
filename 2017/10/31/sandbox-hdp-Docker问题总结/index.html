@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="-Spark 源码调试," />
+  <meta name="keywords" content="docker," />
 
 
 
@@ -94,30 +94,20 @@
 
 
 
-<meta name="description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="keywords" content="-Spark 源码调试">
+<meta name="description" content="Hortonworks Sandbox是一个集成了HDP产品，它里面包含了所有HDP组件，并且已经部署完成。通过使用Hortonworks的Sandbox docker容器，可以非常方便快捷的完成大数据平台的部署，时间从过去的几天缩短为几分钟。 在部署过程中遇到的问题，下面做个总结，其他简要的步骤省去。 docker镜像仓库镜像起始大小设置过低当我们将sandbox-hdp压缩包加载到docker">
+<meta name="keywords" content="docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content=" Spark源码分析调试环境搭建">
-<meta property="og:url" content="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/index.html">
+<meta property="og:title" content="安装sandbox-hdp Docker问题总结">
+<meta property="og:url" content="https://github.com/wtx626/2017/10/31/sandbox-hdp-Docker问题总结/index.html">
 <meta property="og:site_name" content="Dr. Elephant">
-<meta property="og:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
+<meta property="og:description" content="Hortonworks Sandbox是一个集成了HDP产品，它里面包含了所有HDP组件，并且已经部署完成。通过使用Hortonworks的Sandbox docker容器，可以非常方便快捷的完成大数据平台的部署，时间从过去的几天缩短为几分钟。 在部署过程中遇到的问题，下面做个总结，其他简要的步骤省去。 docker镜像仓库镜像起始大小设置过低当我们将sandbox-hdp压缩包加载到docker">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/2.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/3.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/4.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/5.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/6.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/7.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/8.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/9.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/10.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/11.jpg?raw=true">
-<meta property="og:updated_time" content="2017-10-29T07:49:31.189Z">
+<meta property="og:image" content="https://github.com/wtx626/2017/10/31/sandbox-hdp-Docker问题总结/1.png">
+<meta property="og:updated_time" content="2017-10-31T15:50:38.862Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content=" Spark源码分析调试环境搭建">
-<meta name="twitter:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="twitter:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
+<meta name="twitter:title" content="安装sandbox-hdp Docker问题总结">
+<meta name="twitter:description" content="Hortonworks Sandbox是一个集成了HDP产品，它里面包含了所有HDP组件，并且已经部署完成。通过使用Hortonworks的Sandbox docker容器，可以非常方便快捷的完成大数据平台的部署，时间从过去的几天缩短为几分钟。 在部署过程中遇到的问题，下面做个总结，其他简要的步骤省去。 docker镜像仓库镜像起始大小设置过低当我们将sandbox-hdp压缩包加载到docker">
+<meta name="twitter:image" content="https://github.com/wtx626/2017/10/31/sandbox-hdp-Docker问题总结/1.png">
 
 
 
@@ -146,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2017/10/31/sandbox-hdp-Docker问题总结/"/>
 
 
 
 
 
-  <title> Spark源码分析调试环境搭建 | Dr. Elephant</title>
+  <title>安装sandbox-hdp Docker问题总结 | Dr. Elephant</title>
   
 
 
@@ -285,7 +275,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2017/10/31/sandbox-hdp-Docker问题总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
@@ -302,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"> Spark源码分析调试环境搭建</h1>
+          <h1 class="post-title" itemprop="name headline">安装sandbox-hdp Docker问题总结</h1>
         
 
         <div class="post-meta">
@@ -314,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-26T21:39:00+08:00">
-                2017-10-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-31T14:51:36+08:00">
+                2017-10-31
               </time>
             
 
@@ -352,58 +342,33 @@
       
 
       
-        <p>目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。</p>
-<p>搭建环境所需要的工具如下：</p>
+        <p>Hortonworks Sandbox是一个集成了HDP产品，它里面包含了所有HDP组件，并且已经部署完成。通过使用Hortonworks的Sandbox docker容器，可以非常方便快捷的完成大数据平台的部署，时间从过去的几天缩短为几分钟。</p>
+<p>在部署过程中遇到的问题，下面做个总结，其他简要的步骤省去。</p>
+<h4 id="docker镜像仓库镜像起始大小设置过低"><a href="#docker镜像仓库镜像起始大小设置过低" class="headerlink" title="docker镜像仓库镜像起始大小设置过低"></a>docker镜像仓库镜像起始大小设置过低</h4><p>当我们将sandbox-hdp压缩包加载到docker镜像仓库时，有可能会出现下面错误<br>   <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">failed to register layer: ApplyLayer <span class="built_in">exit</span> status 1 stdout:  stderr: write /usr/share/texmf/fonts/tfm/vntex/urwvn/uplb8v.tfm: no space left on device</div></pre></td></tr></table></figure></p>
+<p>   出现这个错误，由于我们安装docker时，默认的设备驱动类型为devicemapper，默认的基础镜像大小为10G，而sandbox-hdp有12G，所以会出现上述错误。</p>
 <ul>
-<li>CentOS 7</li>
-<li>maven 3.5.0</li>
-<li>Java 1.8.0</li>
-<li>Scala 2.12.2</li>
-<li>IntelliJ IDEA2017.1.2</li>
+<li>解决方案</li>
 </ul>
-<p>本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先将<a href="http://link.zhihu.com/?target=https%3A//github.com/apache/spark" target="_blank" rel="external">apache/spark</a> fork到自己的github仓库，接着再IDEA上通过</p>
-<blockquote>
-<p>VCS-&gt;Checkout from Version Control-&gt;Github 中选择刚刚fork下来到本地</p>
-</blockquote>
-<h2 id="配置本地maven"><a href="#配置本地maven" class="headerlink" title="配置本地maven"></a>配置本地maven</h2><p>本文选择使用自己搭建的maven仓库，Spark源码自带的maven会从官方镜像上下载所需的依赖，此步骤会比较耗时，设置为本地maven仓库后，速度会大幅提升。设置方法如下图所示<br><img src="https://github.com/wtx626/image/blob/master/1.jpg?raw=true" alt=""></p>
-<h2 id="编译Spark源码"><a href="#编译Spark源码" class="headerlink" title="编译Spark源码"></a>编译Spark源码</h2><p>选择的最新版的Spark，目前是2.3.0。编译Spark源码，使用自己安装的maven进行编译，其中-T参数是设置编译的线程数，这里设置的是20</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mvn -T -DskipTests clean package</div></pre></td></tr></table></figure>
-<p>经过12分钟的等待，Spark源码编译完成，如下图所示<br><img src="https://github.com/wtx626/image/blob/master/2.jpg?raw=true" alt="2"></p>
-<p> 接着可以通过运行下spark-shell来测试一下编译结果<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./bin/spark-shell</div></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/wtx626/image/blob/master/3.jpg?raw=true" alt=""></p>
-<h2 id="运行Spark源码自带的实例程序"><a href="#运行Spark源码自带的实例程序" class="headerlink" title="运行Spark源码自带的实例程序"></a>运行Spark源码自带的实例程序</h2><p>由于大多数程序都是从hello world开始的，对应的，Spark的第一个程序为wordcount，我们选择调试JavaWordCount。</p>
-<p>打开JavaWordCount程序<br><img src="https://github.com/wtx626/image/blob/master/4.jpg?raw=true" alt=""></p>
-<p>在代码编辑区右键选择</p>
-<blockquote>
-<p>Create ‘JavaWordCount.main()’…</p>
-</blockquote>
-<p>设置如下图所示<br><img src="https://github.com/wtx626/image/blob/master/5.jpg?raw=true" alt=""></p>
-<p>其中</p>
-<blockquote>
-<p>VM options: -Dspark.master=local<br>Program arguments:/home/spark-sourcecode/examples/src/main/resources/people.txt</p>
-</blockquote>
-<p>保存运行配置，这样直接运行会出现以下两个错误，缺失flume sink</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim /etc/systemd/system/docker.service.d/docker.conf</div><div class="line">[Service]</div><div class="line">ExecStart=</div><div class="line">ExecStart=/usr/bin/dockerd --storage-opt=dm.basesize=50G</div><div class="line"></div><div class="line">systemctl daemon-reload</div><div class="line">systemctl docker restart</div></pre></td></tr></table></figure>
+<p>此时我们<code>docker info | grep Base</code>可以看得<code>Base Device Size: 53.69 GB</code></p>
+<p>更详细的步骤可以参考Hortonworks官网提供的方法<a href="https://community.hortonworks.com/content/kbentry/65714/how-to-modify-the-default-docker-configuration-on.html" target="_blank" rel="external">How to modify the default Docker configuration on CentOS 7 to import HDP sandbox</a></p>
+<h4 id="docker-proxy不在path路径"><a href="#docker-proxy不在path路径" class="headerlink" title="docker-proxy不在path路径"></a>docker-proxy不在path路径</h4>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/usr/bin/docker-current: Error response from daemon: driver failed programming external connectivity on endpoint sandbox-hdp (5bb2a96a6ea2245764a2ec4a2542fa0d0cde8329348cfb1a9a3b0f8a69b9d0d3): <span class="built_in">exec</span>: <span class="string">"docker-proxy"</span>: executable file not found <span class="keyword">in</span> <span class="variable">$PATH</span></div></pre></td></tr></table></figure>
 <ul>
-<li>缺失flume sink<img src="https://github.com/wtx626/image/blob/master/6.jpg?raw=true" alt=""></li>
+<li>解决方案</li>
 </ul>
-<p>由于我本机问题已经解决，上图从网上复制。</p>
-<p>解决方法是在</p>
-<blockquote>
-<p>View-&gt;Tool Windows-&gt;Maven Projects</p>
-</blockquote>
-<p>在Spark Project External Flume Sink上右键选择Generate Sources and Update Folders<br><img src="https://github.com/wtx626/image/blob/master/7.jpg?raw=true" alt=""></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s ../../usr/libexec/docker/docker-proxy-current /usr/bin/docker-proxy</div></pre></td></tr></table></figure>
+<h4 id="docker-runc"><a href="#docker-runc" class="headerlink" title="docker-runc"></a>docker-runc</h4>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error response from daemon: shim error: docker-runc not installed on system</div></pre></td></tr></table></figure>
 <ul>
-<li>缺少Spark环境Jars包<img src="https://github.com/wtx626/image/blob/master/8.jpg?raw=true" alt=""></li>
+<li>解决方案</li>
 </ul>
-<p>解决方案如下：</p>
-<blockquote>
-<p>File -&gt; Project Structure -&gt; Modules -&gt; spark-examples_2.11 -&gt; Dependencies 添加依赖 jars -&gt; {spark dir}/spark/assembly/target/scala-2.11/jars/<br><img src="https://github.com/wtx626/image/blob/master/9.jpg?raw=true" alt=""></p>
-</blockquote>
-<p>接着成功运行JavaWordCount<br><img src="https://github.com/wtx626/image/blob/master/10.jpg?raw=true" alt=""></p>
-<h2 id="调试例子程序"><a href="#调试例子程序" class="headerlink" title="调试例子程序"></a>调试例子程序</h2><p><img src="https://github.com/wtx626/image/blob/master/11.jpg?raw=true" alt=""></p>
-<p>接下来就可以看到Spark程序运行时每个变量的值变化，方便我们对Spark源码的设计进行分析。</p>
-<p>不过当我们修改了Spark源码后，我们得使用前面的编译命令对其进行重新编程生成。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ln -s /usr/libexec/docker/docker-runc-current /usr/bin/docker-runc</div></pre></td></tr></table></figure>
+<h4 id="oci-runtime-error"><a href="#oci-runtime-error" class="headerlink" title="oci runtime error"></a>oci runtime error</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Error response from daemon: invalid header field value <span class="string">"oci runtime error: container_linux.go:247: starting container process caused \"process_linux.go:339: running prestart hook 1 caused \\\"error running hook: exit status 1, stdout: , stderr: \\\"\"\n"</span></div></pre></td></tr></table></figure>
+<ul>
+<li>解决方案</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">vim /etc/systemd/system/docker.service.d/docker.conf</div><div class="line">[Service]</div><div class="line">ExecStart=</div><div class="line">ExecStart=/usr/bin/dockerd --<span class="built_in">exec</span>-opt native.cgroupdriver=systemd <span class="variable">$other_options</span> --storage-opt=dm.basesize=50G</div><div class="line"></div><div class="line">systemctl docker restart</div><div class="line">systemctl docker restart</div></pre></td></tr></table></figure>
+<p>将cgroups改为systemd即解决上述问题。</p>
+<h4 id="成功运行"><a href="#成功运行" class="headerlink" title="成功运行"></a>成功运行</h4><p>经过一系列的错误。当我们运行start_sandbox-hdp.sh脚本，出现下图所示日志时即表示启动成功，现在就可以愉快在大数据平台上进行测试开发了。<br><img src="./1.png" alt=""></p>
 
       
     </div>
@@ -421,7 +386,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Spark-源码调试/" rel="tag"># -Spark 源码调试</a>
+            <a href="/tags/docker/" rel="tag"># docker</a>
           
         </div>
       
@@ -434,14 +399,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/10/29/Spark-SQL-Source-Code-Analyse/" rel="next" title="Spark SQL Source Code Analyse">
+                <i class="fa fa-chevron-left"></i> Spark SQL Source Code Analyse
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/27/Spark-Core-Source-Analyse/" rel="prev" title="Spark Core Source Code Analyse">
-                Spark Core Source Code Analyse <i class="fa fa-chevron-right"></i>
+              <a href="/2017/12/18/Tuning-Spark-Application-Based-GC/" rel="prev" title="基于GC的Spark应用程序优化">
+                基于GC的Spark应用程序优化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -613,7 +582,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载源码"><span class="nav-number">1.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置本地maven"><span class="nav-number">2.</span> <span class="nav-text">配置本地maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译Spark源码"><span class="nav-number">3.</span> <span class="nav-text">编译Spark源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行Spark源码自带的实例程序"><span class="nav-number">4.</span> <span class="nav-text">运行Spark源码自带的实例程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试例子程序"><span class="nav-number">5.</span> <span class="nav-text">调试例子程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker镜像仓库镜像起始大小设置过低"><span class="nav-number">1.</span> <span class="nav-text">docker镜像仓库镜像起始大小设置过低</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-proxy不在path路径"><span class="nav-number">2.</span> <span class="nav-text">docker-proxy不在path路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-runc"><span class="nav-number">3.</span> <span class="nav-text">docker-runc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#oci-runtime-error"><span class="nav-number">4.</span> <span class="nav-text">oci runtime error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#成功运行"><span class="nav-number">5.</span> <span class="nav-text">成功运行</span></a></li></ol></div>
             
 
           </div>

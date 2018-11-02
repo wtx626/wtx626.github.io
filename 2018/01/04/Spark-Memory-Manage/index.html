@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="-Spark 源码调试," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -94,30 +94,22 @@
 
 
 
-<meta name="description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="keywords" content="-Spark 源码调试">
+<meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;一个Spark作业主要启动Driver和Executor两类J">
 <meta property="og:type" content="article">
-<meta property="og:title" content=" Spark源码分析调试环境搭建">
-<meta property="og:url" content="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/index.html">
+<meta property="og:title" content="Spark内存管理总结">
+<meta property="og:url" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/index.html">
 <meta property="og:site_name" content="Dr. Elephant">
-<meta property="og:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
+<meta property="og:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;一个Spark作业主要启动Driver和Executor两类J">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/2.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/3.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/4.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/5.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/6.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/7.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/8.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/9.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/10.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/11.jpg?raw=true">
-<meta property="og:updated_time" content="2017-10-29T07:49:31.189Z">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image001.png">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image002.png">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image004.png">
+<meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image005.png">
+<meta property="og:updated_time" content="2018-11-02T02:11:11.696Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content=" Spark源码分析调试环境搭建">
-<meta name="twitter:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="twitter:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
+<meta name="twitter:title" content="Spark内存管理总结">
+<meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;一个Spark作业主要启动Driver和Executor两类J">
+<meta name="twitter:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image001.png">
 
 
 
@@ -146,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/"/>
 
 
 
 
 
-  <title> Spark源码分析调试环境搭建 | Dr. Elephant</title>
+  <title>Spark内存管理总结 | Dr. Elephant</title>
   
 
 
@@ -285,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
@@ -302,7 +294,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"> Spark源码分析调试环境搭建</h1>
+          <h1 class="post-title" itemprop="name headline">Spark内存管理总结</h1>
         
 
         <div class="post-meta">
@@ -314,8 +306,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-26T21:39:00+08:00">
-                2017-10-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-04T15:57:37+08:00">
+                2018-01-04
               </time>
             
 
@@ -352,58 +344,40 @@
       
 
       
-        <p>目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。</p>
-<p>搭建环境所需要的工具如下：</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一个Spark作业主要启动Driver和Executor两类JVM进程，Driver对内存的管理较为简单，主要负责Spark作业的调度，Stage的划分、任务的分发、状态的监听等，Executor则负责具体的计算任务，涉及到计算、执行结果回传和持久化RDD等功能。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spark作为内存计算框架，创新的引入了堆外内存，这种机制让Spark突破JVM内存的管理，直接使用系统内存，极大的提高了内存使用，不过一个显著的问题就是当系统内存不太够的时候，会造成主机也无法正常工作。</p>
+<h3 id="堆内和堆外内存"><a href="#堆内和堆外内存" class="headerlink" title="堆内和堆外内存"></a>堆内和堆外内存</h3><p>Spark Executor的堆外内存示意图如下所示<br><img src="./image001.png" alt=""></p>
+<h4 id="堆内存"><a href="#堆内存" class="headerlink" title="堆内存"></a>堆内存</h4><p>控制参数</p>
 <ul>
-<li>CentOS 7</li>
-<li>maven 3.5.0</li>
-<li>Java 1.8.0</li>
-<li>Scala 2.12.2</li>
-<li>IntelliJ IDEA2017.1.2</li>
+<li>executor-memory</li>
+<li>spark.executor.memory </li>
 </ul>
-<p>本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先将<a href="http://link.zhihu.com/?target=https%3A//github.com/apache/spark" target="_blank" rel="external">apache/spark</a> fork到自己的github仓库，接着再IDEA上通过</p>
-<blockquote>
-<p>VCS-&gt;Checkout from Version Control-&gt;Github 中选择刚刚fork下来到本地</p>
-</blockquote>
-<h2 id="配置本地maven"><a href="#配置本地maven" class="headerlink" title="配置本地maven"></a>配置本地maven</h2><p>本文选择使用自己搭建的maven仓库，Spark源码自带的maven会从官方镜像上下载所需的依赖，此步骤会比较耗时，设置为本地maven仓库后，速度会大幅提升。设置方法如下图所示<br><img src="https://github.com/wtx626/image/blob/master/1.jpg?raw=true" alt=""></p>
-<h2 id="编译Spark源码"><a href="#编译Spark源码" class="headerlink" title="编译Spark源码"></a>编译Spark源码</h2><p>选择的最新版的Spark，目前是2.3.0。编译Spark源码，使用自己安装的maven进行编译，其中-T参数是设置编译的线程数，这里设置的是20</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mvn -T -DskipTests clean package</div></pre></td></tr></table></figure>
-<p>经过12分钟的等待，Spark源码编译完成，如下图所示<br><img src="https://github.com/wtx626/image/blob/master/2.jpg?raw=true" alt="2"></p>
-<p> 接着可以通过运行下spark-shell来测试一下编译结果<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./bin/spark-shell</div></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/wtx626/image/blob/master/3.jpg?raw=true" alt=""></p>
-<h2 id="运行Spark源码自带的实例程序"><a href="#运行Spark源码自带的实例程序" class="headerlink" title="运行Spark源码自带的实例程序"></a>运行Spark源码自带的实例程序</h2><p>由于大多数程序都是从hello world开始的，对应的，Spark的第一个程序为wordcount，我们选择调试JavaWordCount。</p>
-<p>打开JavaWordCount程序<br><img src="https://github.com/wtx626/image/blob/master/4.jpg?raw=true" alt=""></p>
-<p>在代码编辑区右键选择</p>
-<blockquote>
-<p>Create ‘JavaWordCount.main()’…</p>
-</blockquote>
-<p>设置如下图所示<br><img src="https://github.com/wtx626/image/blob/master/5.jpg?raw=true" alt=""></p>
-<p>其中</p>
-<blockquote>
-<p>VM options: -Dspark.master=local<br>Program arguments:/home/spark-sourcecode/examples/src/main/resources/people.txt</p>
-</blockquote>
-<p>保存运行配置，这样直接运行会出现以下两个错误，缺失flume sink</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Executor内所有的线程并发使用这些内存，这些内存我们主要关注在执行内存和存储内存两部分上。存储内存可以用来缓存RDD和广播变量，而Spark执行shuffle操作的时候需要先将数据缓存到执行内存，按照一定的策略溢写到磁盘。其他剩余的内存不做特殊处理。</p>
+<h4 id="堆外内存"><a href="#堆外内存" class="headerlink" title="堆外内存"></a>堆外内存</h4><p>控制参数</p>
 <ul>
-<li>缺失flume sink<img src="https://github.com/wtx626/image/blob/master/6.jpg?raw=true" alt=""></li>
+<li>spark.memory.offHeap.enabled 是否启用</li>
+<li>spark.memory.offHeap.size 堆外大小</li>
+<li>程序代码StorageLevel.OFF_HEAP</li>
 </ul>
-<p>由于我本机问题已经解决，上图从网上复制。</p>
-<p>解决方法是在</p>
-<blockquote>
-<p>View-&gt;Tool Windows-&gt;Maven Projects</p>
-</blockquote>
-<p>在Spark Project External Flume Sink上右键选择Generate Sources and Update Folders<br><img src="https://github.com/wtx626/image/blob/master/7.jpg?raw=true" alt=""></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为了进一步优化内存的使用以及提高 Shuffle 时排序的效率，Spark通过堆外内存机制可以直接操作系统堆外内存，减少了不必要的内存开销，以及频繁的 GC 扫描和回收，提升了处理性能。堆外内存可以被精确地申请和释放，而且序列化的数据占用的空间可以被精确计算，所以相比堆内内存来说降低了管理的难度，也降低了误差。<br>默认情况下并不开启，堆外内存很简单的划分为两块，执行和存储。<br><strong>问题：spark.memory.offHeap.enabled 这个参数spark 官方默认为false。 既然这个特性比较出色，能减小GC、内存、序列化开销，为什么不默认true使用呢？</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前在offHeap存储的数据只能是序列化的二进制数据，意味着它并不是结构化的数据，而Spark在计算的时候在大部分场景下只能对非序列化的Partition进行处理，因为需要对每条Record做运算。二进制数据的序列化和反序列化都需要开销，所以用offHeap存储的性能未必就一定强过onHeap存储。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;直接操作on-heap的效率是高于操作off-heap的。那为什么还要用off-heap呢？这就是考虑GC情况，直接操作on-heap数据导致的GC时间开销可能大于操作off-heap的序列化开销，这时候使用off-heap的balance性能就可能更好。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所以使用off-heap的可能场景：</p>
 <ul>
-<li>缺少Spark环境Jars包<img src="https://github.com/wtx626/image/blob/master/8.jpg?raw=true" alt=""></li>
+<li>小内存情况，作业GC因为内存不够导致非常频繁；</li>
+<li>大内存情况，如ML作业一个executor 十几甚至几十G，也容易GC，则使用off-heap可能有更好效果。（需要实际验证）</li>
 </ul>
-<p>解决方案如下：</p>
+<h3 id="内存空间"><a href="#内存空间" class="headerlink" title="内存空间"></a>内存空间</h3><h4 id="Spark-1-6以前静态内存管理"><a href="#Spark-1-6以前静态内存管理" class="headerlink" title="Spark 1.6以前静态内存管理"></a>Spark 1.6以前静态内存管理</h4><p>Spark 1.6以前将内存的区块划分设为固定大小，如下图所示<br><img src="./image002.png" alt=""><br>我们关心的存储内存和执行内存大小分别如下</p>
 <blockquote>
-<p>File -&gt; Project Structure -&gt; Modules -&gt; spark-examples_2.11 -&gt; Dependencies 添加依赖 jars -&gt; {spark dir}/spark/assembly/target/scala-2.11/jars/<br><img src="https://github.com/wtx626/image/blob/master/9.jpg?raw=true" alt=""></p>
+<p>可用的存储内存 = systemMaxMemory * spark.storage.memoryFraction * spark.storage.safetyFraction<br> 可用的执行内存 = systemMaxMemory * spark.shuffle.memoryFraction * spark.shuffle.safetyFraction</p>
 </blockquote>
-<p>接着成功运行JavaWordCount<br><img src="https://github.com/wtx626/image/blob/master/10.jpg?raw=true" alt=""></p>
-<h2 id="调试例子程序"><a href="#调试例子程序" class="headerlink" title="调试例子程序"></a>调试例子程序</h2><p><img src="https://github.com/wtx626/image/blob/master/11.jpg?raw=true" alt=""></p>
-<p>接下来就可以看到Spark程序运行时每个变量的值变化，方便我们对Spark源码的设计进行分析。</p>
-<p>不过当我们修改了Spark源码后，我们得使用前面的编译命令对其进行重新编程生成。</p>
+<p>其中<br>systemMaxMemory即为申请的Executor内存大小，控制参数为<code>spark.executor.memory</code><br>safetyFraction 为预留的保护区域，用来防止OOM。</p>
+<p>堆外内存的管理就非常简单了，默认情况下直接按50%的比例将堆外内存分为存储内存和执行内存，可以通过<code>spark.memory.storageFraction</code>来控制比例。</p>
+<h4 id="Spark-1-6之后的统一内存管理"><a href="#Spark-1-6之后的统一内存管理" class="headerlink" title="Spark 1.6之后的统一内存管理"></a>Spark 1.6之后的统一内存管理</h4><p>与上一版最大的区别就是每一块内存的大小不固定，为动态调整。堆外和堆内分别如下图所示<br><img src="./image004.png" alt="统一内存管理堆内"><br><img src="./image005.png" alt="统一内存管理堆外"></p>
+<p>动态机制如下</p>
+<ul>
+<li>spark.storage.storageFraction 控制存储内存和执行内存双方各自拥有的空间的范围；</li>
+<li>双方的空间都不足时，则存储到硬盘；若己方空间不足而对方空余时，可借用对方的空间；</li>
+<li>执行内存的空间被对方占用后，可让对方将占用的部分转存到硬盘，然后”归还”借用的空间</li>
+<li>存储内存的空间被对方占用后，无法让对方”归还”，因为需要考虑 Shuffle 过程中的很多因素，实现起来较为复杂。</li>
+</ul>
+<p><strong>优点</strong>：一定程度上提高了堆内和堆外内存资源的利用率，降低了开发者维护 Spark 内存的难度；<br><strong>缺点</strong>：如果存储内存的空间太大或者说缓存的数据过多，反而会导致频繁的全量垃圾回收，降低任务执行时的性能，因为缓存的 RDD 数据通常都是长期驻留内存的。</p>
 
       
     </div>
@@ -419,12 +393,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Spark-源码调试/" rel="tag"># -Spark 源码调试</a>
-          
-        </div>
-      
 
       
       
@@ -434,14 +402,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/12/26/flume-custom-interceptor/" rel="next" title="flume自定义拦截器">
+                <i class="fa fa-chevron-left"></i> flume自定义拦截器
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/27/Spark-Core-Source-Analyse/" rel="prev" title="Spark Core Source Code Analyse">
-                Spark Core Source Code Analyse <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/26/java-Generic/" rel="prev" title="java方法泛型化在avro序列化与反序列化的应用">
+                java方法泛型化在avro序列化与反序列化的应用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -613,7 +585,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载源码"><span class="nav-number">1.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置本地maven"><span class="nav-number">2.</span> <span class="nav-text">配置本地maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译Spark源码"><span class="nav-number">3.</span> <span class="nav-text">编译Spark源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行Spark源码自带的实例程序"><span class="nav-number">4.</span> <span class="nav-text">运行Spark源码自带的实例程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试例子程序"><span class="nav-number">5.</span> <span class="nav-text">调试例子程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#堆内和堆外内存"><span class="nav-number">1.</span> <span class="nav-text">堆内和堆外内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#堆内存"><span class="nav-number">1.1.</span> <span class="nav-text">堆内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆外内存"><span class="nav-number">1.2.</span> <span class="nav-text">堆外内存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存空间"><span class="nav-number">2.</span> <span class="nav-text">内存空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spark-1-6以前静态内存管理"><span class="nav-number">2.1.</span> <span class="nav-text">Spark 1.6以前静态内存管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spark-1-6之后的统一内存管理"><span class="nav-number">2.2.</span> <span class="nav-text">Spark 1.6之后的统一内存管理</span></a></li></ol></li></ol></div>
             
 
           </div>

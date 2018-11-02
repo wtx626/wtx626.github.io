@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="-Spark 源码调试," />
+  <meta name="keywords" content="Spark tuning," />
 
 
 
@@ -94,30 +94,20 @@
 
 
 
-<meta name="description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="keywords" content="-Spark 源码调试">
+<meta name="description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
+<meta name="keywords" content="Spark tuning">
 <meta property="og:type" content="article">
-<meta property="og:title" content=" Spark源码分析调试环境搭建">
-<meta property="og:url" content="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/index.html">
+<meta property="og:title" content="Spark Performance Monitor Tool Dr.Elephant">
+<meta property="og:url" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/index.html">
 <meta property="og:site_name" content="Dr. Elephant">
-<meta property="og:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
+<meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/2.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/3.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/4.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/5.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/6.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/7.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/8.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/9.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/10.jpg?raw=true">
-<meta property="og:image" content="https://github.com/wtx626/image/blob/master/11.jpg?raw=true">
-<meta property="og:updated_time" content="2017-10-29T07:49:31.189Z">
+<meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
+<meta property="og:updated_time" content="2018-11-02T02:22:37.322Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content=" Spark源码分析调试环境搭建">
-<meta name="twitter:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
-<meta name="twitter:image" content="https://github.com/wtx626/image/blob/master/1.jpg?raw=true">
+<meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
+<meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
+<meta name="twitter:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
 
 
 
@@ -146,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/"/>
 
 
 
 
 
-  <title> Spark源码分析调试环境搭建 | Dr. Elephant</title>
+  <title>Spark Performance Monitor Tool Dr.Elephant | Dr. Elephant</title>
   
 
 
@@ -285,7 +275,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
@@ -302,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"> Spark源码分析调试环境搭建</h1>
+          <h1 class="post-title" itemprop="name headline">Spark Performance Monitor Tool Dr.Elephant</h1>
         
 
         <div class="post-meta">
@@ -314,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-26T21:39:00+08:00">
-                2017-10-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-30T20:41:01+08:00">
+                2018-10-30
               </time>
             
 
@@ -352,58 +342,85 @@
       
 
       
-        <p>目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。</p>
-<p>搭建环境所需要的工具如下：</p>
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedIn公司也注意到这个问题 ，不同Hadoop使用经验的员工使用不同的技术在集群中运行他们的任务。这意味着，针对不同的用户、不同的技术进行常规的培训变的越来越难，而且这样的工作根本不具备良好的扩展性。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;直到2016年，LinkedIn的Hadoop团队开始代替员工进行工作流分析，并给出任务的优化建议。作为优化工作的第一步，基于一些简单规则，给予用户一些建议，并取得了明显的优化效果。但是，随着用户的增加，由于用户参与总会有些延迟，使得我们越来越难提供足够的支持资源。没有办法验证我们是否达到了任务性能的优化目标或者保证性能优化方向的全覆盖。因此，我们需要一个标准化和自动化的过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hadoop的专家们审查流程时发现几个常见的经常性的优化模式，并在此基础上，决定开始一个新的实验项目，同时优化Hadoop平台开发者和Hadoop使用者的时间。这就是Dr.Elephant的诞生过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当然开源的Dr.Elephant一方面对Spark任务的性能监控和评价不够全面，另一方面，只是简单地展示目前的参数和任务运行时的状态数据，并没有很好地利用任务运行时的状态特征形成评价指标。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本文先系统分析Dr.Elephant的工作原理以及其对作业性能评价的启发式算法。</p>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p>Dr. Elephant 的系统架构如下图。主要包括三个部分：</p>
 <ul>
-<li>CentOS 7</li>
-<li>maven 3.5.0</li>
-<li>Java 1.8.0</li>
-<li>Scala 2.12.2</li>
-<li>IntelliJ IDEA2017.1.2</li>
+<li>数据采集：数据源为 Job History</li>
+<li>诊断和建议：内置诊断系统</li>
+<li>存储和展示：MySQL 和 WebUI<br><img src="./drelephant-arch.png" alt="drelephant-arch"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr.Elephant定期从Hadoop平台的YARN资源管理中心获取近期所有的任务，这些任务既包含成功的任务，也包含哪些失败的任务。每个任务的元数据，例如任务计数器、配置信息以及运行信息都可以从Hadoop平台的历史任务服务端获取到。一旦获取到了任务的元数据，Dr.Elephant就基于这些元数据运行启发式算法，然后会产生一份该启发式算法对该任务性能的诊断报告。根据每个任务的执行情况，这份报告会为该任务标记一个待优化的严重性级别。严重性级别一共分为五级，报告会对该任务产生一个级别的定位，并通过级别来表明该任务中存在的性能问题的严重程度。<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2>针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</li>
 </ul>
-<p>本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先将<a href="http://link.zhihu.com/?target=https%3A//github.com/apache/spark" target="_blank" rel="external">apache/spark</a> fork到自己的github仓库，接着再IDEA上通过</p>
-<blockquote>
-<p>VCS-&gt;Checkout from Version Control-&gt;Github 中选择刚刚fork下来到本地</p>
-</blockquote>
-<h2 id="配置本地maven"><a href="#配置本地maven" class="headerlink" title="配置本地maven"></a>配置本地maven</h2><p>本文选择使用自己搭建的maven仓库，Spark源码自带的maven会从官方镜像上下载所需的依赖，此步骤会比较耗时，设置为本地maven仓库后，速度会大幅提升。设置方法如下图所示<br><img src="https://github.com/wtx626/image/blob/master/1.jpg?raw=true" alt=""></p>
-<h2 id="编译Spark源码"><a href="#编译Spark源码" class="headerlink" title="编译Spark源码"></a>编译Spark源码</h2><p>选择的最新版的Spark，目前是2.3.0。编译Spark源码，使用自己安装的maven进行编译，其中-T参数是设置编译的线程数，这里设置的是20</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mvn -T -DskipTests clean package</div></pre></td></tr></table></figure>
-<p>经过12分钟的等待，Spark源码编译完成，如下图所示<br><img src="https://github.com/wtx626/image/blob/master/2.jpg?raw=true" alt="2"></p>
-<p> 接着可以通过运行下spark-shell来测试一下编译结果<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./bin/spark-shell</div></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/wtx626/image/blob/master/3.jpg?raw=true" alt=""></p>
-<h2 id="运行Spark源码自带的实例程序"><a href="#运行Spark源码自带的实例程序" class="headerlink" title="运行Spark源码自带的实例程序"></a>运行Spark源码自带的实例程序</h2><p>由于大多数程序都是从hello world开始的，对应的，Spark的第一个程序为wordcount，我们选择调试JavaWordCount。</p>
-<p>打开JavaWordCount程序<br><img src="https://github.com/wtx626/image/blob/master/4.jpg?raw=true" alt=""></p>
-<p>在代码编辑区右键选择</p>
-<blockquote>
-<p>Create ‘JavaWordCount.main()’…</p>
-</blockquote>
-<p>设置如下图所示<br><img src="https://github.com/wtx626/image/blob/master/5.jpg?raw=true" alt=""></p>
-<p>其中</p>
-<blockquote>
-<p>VM options: -Dspark.master=local<br>Program arguments:/home/spark-sourcecode/examples/src/main/resources/people.txt</p>
-</blockquote>
-<p>保存运行配置，这样直接运行会出现以下两个错误，缺失flume sink</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">None</th>
+<th style="text-align:center">Low</th>
+<th style="text-align:center">Moderate</th>
+<th style="text-align:center">Server</th>
+<th style="text-align:center">Critical</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Spark-Configuration"><a href="#Spark-Configuration" class="headerlink" title="Spark Configuration"></a>Spark Configuration</h3><p>计算公式</p>
+<p>$$<br>severity= \max{serializerSeverity, shuffleAndDynamicAllocationSeverity}<br>$$</p>
 <ul>
-<li>缺失flume sink<img src="https://github.com/wtx626/image/blob/master/6.jpg?raw=true" alt=""></li>
+<li><strong>serializerSeverity</strong> Spark的序列化器，对应配置中的spark.serializer</li>
 </ul>
-<p>由于我本机问题已经解决，上图从网上复制。</p>
-<p>解决方法是在</p>
-<blockquote>
-<p>View-&gt;Tool Windows-&gt;Maven Projects</p>
-</blockquote>
-<p>在Spark Project External Flume Sink上右键选择Generate Sources and Update Folders<br><img src="https://github.com/wtx626/image/blob/master/7.jpg?raw=true" alt=""></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序列化器配置信息</th>
+<th style="text-align:center">严重程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">序列化器没配置或者也不为KryoSerializer</td>
+<td style="text-align:center">MODERATE</td>
+</tr>
+<tr>
+<td style="text-align:center">序列化为KryoSerializer</td>
+<td style="text-align:center">NONE</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>缺少Spark环境Jars包<img src="https://github.com/wtx626/image/blob/master/8.jpg?raw=true" alt=""></li>
+<li><strong>shuffleAndDynamicAllocationSeverity</strong>  shuffle service和动态分配</li>
 </ul>
-<p>解决方案如下：</p>
-<blockquote>
-<p>File -&gt; Project Structure -&gt; Modules -&gt; spark-examples_2.11 -&gt; Dependencies 添加依赖 jars -&gt; {spark dir}/spark/assembly/target/scala-2.11/jars/<br><img src="https://github.com/wtx626/image/blob/master/9.jpg?raw=true" alt=""></p>
-</blockquote>
-<p>接着成功运行JavaWordCount<br><img src="https://github.com/wtx626/image/blob/master/10.jpg?raw=true" alt=""></p>
-<h2 id="调试例子程序"><a href="#调试例子程序" class="headerlink" title="调试例子程序"></a>调试例子程序</h2><p><img src="https://github.com/wtx626/image/blob/master/11.jpg?raw=true" alt=""></p>
-<p>接下来就可以看到Spark程序运行时每个变量的值变化，方便我们对Spark源码的设计进行分析。</p>
-<p>不过当我们修改了Spark源码后，我们得使用前面的编译命令对其进行重新编程生成。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">是否动态分配</th>
+<th style="text-align:center">是否开启shuffle服务</th>
+<th style="text-align:center">严重程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">*</td>
+<td style="text-align:center">true</td>
+<td style="text-align:center">NONE</td>
+</tr>
+<tr>
+<td style="text-align:center">false</td>
+<td style="text-align:center">fasle</td>
+<td style="text-align:center">MODERATE</td>
+</tr>
+<tr>
+<td style="text-align:center">true</td>
+<td style="text-align:center">fasle</td>
+<td style="text-align:center">SEVERE</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -421,7 +438,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Spark-源码调试/" rel="tag"># -Spark 源码调试</a>
+            <a href="/tags/Spark-tuning/" rel="tag"># Spark tuning</a>
           
         </div>
       
@@ -434,15 +451,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/01/26/java-Generic/" rel="next" title="java方法泛型化在avro序列化与反序列化的应用">
+                <i class="fa fa-chevron-left"></i> java方法泛型化在avro序列化与反序列化的应用
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/10/27/Spark-Core-Source-Analyse/" rel="prev" title="Spark Core Source Code Analyse">
-                Spark Core Source Code Analyse <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -613,7 +630,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载源码"><span class="nav-number">1.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置本地maven"><span class="nav-number">2.</span> <span class="nav-text">配置本地maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译Spark源码"><span class="nav-number">3.</span> <span class="nav-text">编译Spark源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行Spark源码自带的实例程序"><span class="nav-number">4.</span> <span class="nav-text">运行Spark源码自带的实例程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试例子程序"><span class="nav-number">5.</span> <span class="nav-text">调试例子程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li></ol></li></ol></div>
             
 
           </div>
