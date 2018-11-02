@@ -103,7 +103,7 @@
 <meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T07:02:39.224Z">
+<meta property="og:updated_time" content="2018-11-02T07:05:46.960Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
@@ -551,7 +551,29 @@
 </ul>
 <p>定义</p>
 <p>$$<br>radio = \frac{jvmGcTimeTotal}{executorRunTimeTotal}<br>$$</p>
-<p>具体比例如下：<br>|radio| &gt;=0.2| &gt;=0.15| &gt;=0.1 |&gt;=0.08|  |<br>| :—: | :—: | :—: | :—:| :—: | :—:|<br>| 严重程度 | CRITICAL | SEVERE | MODERATE | LOW | NONE |</p>
+<p>具体比例如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">radio</th>
+<th style="text-align:center">&gt;=0.2</th>
+<th style="text-align:center">&gt;=0.15</th>
+<th style="text-align:center">&gt;=0.1</th>
+<th style="text-align:center">&gt;=0.08</th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">严重程度</td>
+<td style="text-align:center">CRITICAL</td>
+<td style="text-align:center">SEVERE</td>
+<td style="text-align:center">MODERATE</td>
+<td style="text-align:center">LOW</td>
+<td style="text-align:center">NONE</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
