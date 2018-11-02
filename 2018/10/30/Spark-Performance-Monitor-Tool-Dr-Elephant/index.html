@@ -103,7 +103,7 @@
 <meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T07:11:56.885Z">
+<meta property="og:updated_time" content="2018-11-02T07:15:15.713Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
@@ -350,7 +350,7 @@
 <li>存储和展示：MySQL 和 WebUI<br><img src="./drelephant-arch.png" alt="drelephant-arch"></li>
 </ul>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr.Elephant定期从Hadoop平台的YARN资源管理中心获取近期所有的任务，这些任务既包含成功的任务，也包含哪些失败的任务。每个任务的元数据，例如任务计数器、配置信息以及运行信息都可以从Hadoop平台的历史任务服务端获取到。一旦获取到了任务的元数据，Dr.Elephant就基于这些元数据运行启发式算法，然后会产生一份该启发式算法对该任务性能的诊断报告。根据每个任务的执行情况，这份报告会为该任务标记一个待优化的严重性级别。严重性级别一共分为五级，报告会对该任务产生一个级别的定位，并通过级别来表明该任务中存在的性能问题的严重程度。</p>
-<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><p>针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</p>
+<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</p>
 <table>
 <thead>
 <tr>
@@ -372,7 +372,7 @@
 </tbody>
 </table>
 <h3 id="Spark-Configuration"><a href="#Spark-Configuration" class="headerlink" title="Spark Configuration"></a>Spark Configuration</h3><p>计算公式</p>
-<p>$$<br>severity= \max{serializerSeverity, shuffleAndDynamicAllocationSeverity}<br>$$</p>
+<p>$$<br>severity= \max({serializerSeverity, shuffleAndDynamicAllocationSeverity})<br>$$</p>
 <ul>
 <li><strong>serializerSeverity</strong> Spark的序列化器，对应配置中的spark.serializer</li>
 </ul>
@@ -423,7 +423,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="Spark-Executor-Metrics"><a href="#Spark-Executor-Metrics" class="headerlink" title="Spark Executor Metrics"></a>Spark Executor Metrics</h3><p>计算公式<br>$$<br>severity= \max{storageMemoryUsedSeverity, taskTimeSeverity,inputBytesSeverity,shuffleReadBytesSeverity,shuffleWriteBytesSeverity}<br>$$</p>
+<h3 id="Spark-Executor-Metrics"><a href="#Spark-Executor-Metrics" class="headerlink" title="Spark Executor Metrics"></a>Spark Executor Metrics</h3><p>计算公式<br>$$<br>severity= \max({storageMemoryUsedSeverity, taskTimeSeverity,inputBytesSeverity,shuffleReadBytesSeverity,shuffleWriteBytesSeverity})<br>$$</p>
 <ul>
 <li><strong>storageMemoryUsedSeverity</strong></li>
 </ul>
