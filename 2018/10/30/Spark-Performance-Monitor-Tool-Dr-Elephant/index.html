@@ -103,7 +103,7 @@
 <meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T02:39:36.787Z">
+<meta property="og:updated_time" content="2018-11-02T03:04:36.614Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
@@ -423,6 +423,124 @@
 </tr>
 </tbody>
 </table>
+<h3 id="Spark-Executor-Metrics"><a href="#Spark-Executor-Metrics" class="headerlink" title="Spark Executor Metrics"></a>Spark Executor Metrics</h3><p>计算公式<br>$$<br>severity= \max{storageMemoryUsedSeverity, taskTimeSeverity,inputBytesSeverity,shuffleReadBytesSeverity,shuffleWriteBytesSeverity}<br>$$</p>
+<ul>
+<li><strong>storageMemoryUsedSeverity</strong></li>
+</ul>
+<p>这里需要的是两个指标</p>
+<ul>
+<li>storageMemoryUsedDistribution：将Executor中Storage存储使用的情况为序列类型，先对分布进行排序，得到分布数组，取索引值分别为序列length*{0%,25%，50%，75%，100%}所对应的值组成(min,p25,mid,p75,max)的五元组</li>
+<li>ignoreMaxBytesLessThanThreshold：设置的比较阈值，默认为100M</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">storageMemoryUsedDistribution</th>
+<th style="text-align:center">严重程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">最大值小于ignoreMaxBytesLessThanThreshold</td>
+<td style="text-align:center">NONE</td>
+</tr>
+<tr>
+<td style="text-align:center">中间值为0</td>
+<td style="text-align:center">CRITICAL</td>
+</tr>
+<tr>
+<td style="text-align:center">最大值除以中间值</td>
+</tr>
+<tr>
+<td style="text-align:center">&gt;=10</td>
+<td style="text-align:center">CRITICAL</td>
+</tr>
+<tr>
+<td style="text-align:center">&gt;=10^0.5</td>
+<td style="text-align:center">SEVERE</td>
+</tr>
+<tr>
+<td style="text-align:center">&gt;=10^0.25</td>
+<td style="text-align:center">MODERATE</td>
+</tr>
+<tr>
+<td style="text-align:center">&gt;=10^0.125</td>
+<td style="text-align:center">LOW</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>taskTimeSeverity</strong></li>
+</ul>
+<p>两个指标Executor task执行时间分布情况和最长时间阈值</p>
+<ul>
+<li><strong>inputBytesSeverity</strong></li>
+</ul>
+<p>Executor总共输入大小分布和阈值</p>
+<ul>
+<li><strong>shuffleReadBytesSeverity</strong> </li>
+</ul>
+<p>每个Executor总共的Shuffle读入大小分布情况和阈值</p>
+<ul>
+<li><strong>shuffleWriteBytesSeverity </strong></li>
+</ul>
+<p>每个Executor总共的Shuffle读入大小分布情况和阈值</p>
+<h3 id="Spark-Stage-Metrics"><a href="#Spark-Stage-Metrics" class="headerlink" title="Spark Stage Metrics"></a>Spark Stage Metrics</h3><p>计算公式<br>$$<br>severity= \max{(stageFailureRateSeverity +: (taskFailureRateSeverities ++ runtimeSeverities)): _*}<br>$$</p>
+<ul>
+<li><strong>stageFailureRateSeverity</strong></li>
+</ul>
+<p>失败比例 faileRate=失败的Stage个数/总共的Stage个数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">faileRate</th>
+<th style="text-align:center">&gt;=0.5</th>
+<th style="text-align:center">&gt;=0.3</th>
+<th style="text-align:center">&gt;=0.1</th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">严重程度</td>
+<td style="text-align:center">CRITICAL</td>
+<td style="text-align:center">MODERATE</td>
+<td style="text-align:center">LOW</td>
+<td style="text-align:center">NONE</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>taskFailureRateSeverities</strong></li>
+</ul>
+<p>遍历每个Stage，得出task失败的比例，task失败率对应的严重程度与Stage失败相同</p>
+<ul>
+<li><strong>runtimeSeverities</strong></li>
+</ul>
+<p>每个Stage运行时间和Executor的加权averageExecutorRuntime</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">averageExecutorRuntime</th>
+<th style="text-align:center">&gt;=60</th>
+<th style="text-align:center">&gt;=45</th>
+<th style="text-align:center">&gt;=30</th>
+<th style="text-align:center">&gt;=15</th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">严重程度</td>
+<td style="text-align:center">CRITICAL</td>
+<td style="text-align:center">SEVERE</td>
+<td style="text-align:center">MODERATE</td>
+<td style="text-align:center">LOW</td>
+<td style="text-align:center">NONE</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Spark-Job-Metrics"><a href="#Spark-Job-Metrics" class="headerlink" title="Spark Job Metrics"></a>Spark Job Metrics</h3><p>计算公式<br>$$<br>severity= \max{(jobFailureRateSeverity +: taskFailureRateSeverities): _*}<br>$$</p>
 
       
     </div>
@@ -632,7 +750,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Executor-Metrics"><span class="nav-number">3.2.</span> <span class="nav-text">Spark Executor Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Stage-Metrics"><span class="nav-number">3.3.</span> <span class="nav-text">Spark Stage Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Job-Metrics"><span class="nav-number">3.4.</span> <span class="nav-text">Spark Job Metrics</span></a></li></ol></li></ol></div>
             
 
           </div>
