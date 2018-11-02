@@ -94,19 +94,19 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({            tex2jax: {            skipTags: [‘script’, ‘noscript’, ‘style’, ‘textarea’, ‘pre’],            inlineMath: [[‘$’,’$’]]            }        });     引言&amp;nb">
+<meta name="description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta name="keywords" content="Spark tuning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta property="og:url" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/index.html">
 <meta property="og:site_name" content="Dr. Elephant">
-<meta property="og:description" content="MathJax.Hub.Config({            tex2jax: {            skipTags: [‘script’, ‘noscript’, ‘style’, ‘textarea’, ‘pre’],            inlineMath: [[‘$’,’$’]]            }        });     引言&amp;nb">
+<meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T02:31:51.977Z">
+<meta property="og:updated_time" content="2018-11-02T02:39:36.787Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
-<meta name="twitter:description" content="MathJax.Hub.Config({            tex2jax: {            skipTags: [‘script’, ‘noscript’, ‘style’, ‘textarea’, ‘pre’],            inlineMath: [[‘$’,’$’]]            }        });     引言&amp;nb">
+<meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta name="twitter:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
 
 
@@ -342,14 +342,15 @@
       
 
       
-        <p><head><br>    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script><br>    <script type="text/x-mathjax-config"><br>        MathJax.Hub.Config({<br>            tex2jax: {<br>            skipTags: [‘script’, ‘noscript’, ‘style’, ‘textarea’, ‘pre’],<br>            inlineMath: [[‘$’,’$’]]<br>            }<br>        });<br>    </script><br></head></p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedIn公司也注意到这个问题 ，不同Hadoop使用经验的员工使用不同的技术在集群中运行他们的任务。这意味着，针对不同的用户、不同的技术进行常规的培训变的越来越难，而且这样的工作根本不具备良好的扩展性。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;直到2016年，LinkedIn的Hadoop团队开始代替员工进行工作流分析，并给出任务的优化建议。作为优化工作的第一步，基于一些简单规则，给予用户一些建议，并取得了明显的优化效果。但是，随着用户的增加，由于用户参与总会有些延迟，使得我们越来越难提供足够的支持资源。没有办法验证我们是否达到了任务性能的优化目标或者保证性能优化方向的全覆盖。因此，我们需要一个标准化和自动化的过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hadoop的专家们审查流程时发现几个常见的经常性的优化模式，并在此基础上，决定开始一个新的实验项目，同时优化Hadoop平台开发者和Hadoop使用者的时间。这就是Dr.Elephant的诞生过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当然开源的Dr.Elephant一方面对Spark任务的性能监控和评价不够全面，另一方面，只是简单地展示目前的参数和任务运行时的状态数据，并没有很好地利用任务运行时的状态特征形成评价指标。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本文先系统分析Dr.Elephant的工作原理以及其对作业性能评价的启发式算法。</p>
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedIn公司也注意到这个问题 ，不同Hadoop使用经验的员工使用不同的技术在集群中运行他们的任务。这意味着，针对不同的用户、不同的技术进行常规的培训变的越来越难，而且这样的工作根本不具备良好的扩展性。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;直到2016年，LinkedIn的Hadoop团队开始代替员工进行工作流分析，并给出任务的优化建议。作为优化工作的第一步，基于一些简单规则，给予用户一些建议，并取得了明显的优化效果。但是，随着用户的增加，由于用户参与总会有些延迟，使得我们越来越难提供足够的支持资源。没有办法验证我们是否达到了任务性能的优化目标或者保证性能优化方向的全覆盖。因此，我们需要一个标准化和自动化的过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hadoop的专家们审查流程时发现几个常见的经常性的优化模式，并在此基础上，决定开始一个新的实验项目，同时优化Hadoop平台开发者和Hadoop使用者的时间。这就是Dr.Elephant的诞生过程。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当然开源的Dr.Elephant一方面对Spark任务的性能监控和评价不够全面，另一方面，只是简单地展示目前的参数和任务运行时的状态数据，并没有很好地利用任务运行时的状态特征形成评价指标。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本文先系统分析Dr.Elephant的工作原理以及其对作业性能评价的启发式算法。</p>
 <h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><p>Dr. Elephant 的系统架构如下图。主要包括三个部分：</p>
 <ul>
 <li>数据采集：数据源为 Job History</li>
 <li>诊断和建议：内置诊断系统</li>
-<li>存储和展示：MySQL 和 WebUI<br><img src="./drelephant-arch.png" alt="drelephant-arch"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr.Elephant定期从Hadoop平台的YARN资源管理中心获取近期所有的任务，这些任务既包含成功的任务，也包含哪些失败的任务。每个任务的元数据，例如任务计数器、配置信息以及运行信息都可以从Hadoop平台的历史任务服务端获取到。一旦获取到了任务的元数据，Dr.Elephant就基于这些元数据运行启发式算法，然后会产生一份该启发式算法对该任务性能的诊断报告。根据每个任务的执行情况，这份报告会为该任务标记一个待优化的严重性级别。严重性级别一共分为五级，报告会对该任务产生一个级别的定位，并通过级别来表明该任务中存在的性能问题的严重程度。<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2>针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</li>
+<li>存储和展示：MySQL 和 WebUI<br><img src="./drelephant-arch.png" alt="drelephant-arch"></li>
 </ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr.Elephant定期从Hadoop平台的YARN资源管理中心获取近期所有的任务，这些任务既包含成功的任务，也包含哪些失败的任务。每个任务的元数据，例如任务计数器、配置信息以及运行信息都可以从Hadoop平台的历史任务服务端获取到。一旦获取到了任务的元数据，Dr.Elephant就基于这些元数据运行启发式算法，然后会产生一份该启发式算法对该任务性能的诊断报告。根据每个任务的执行情况，这份报告会为该任务标记一个待优化的严重性级别。严重性级别一共分为五级，报告会对该任务产生一个级别的定位，并通过级别来表明该任务中存在的性能问题的严重程度。</p>
+<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><p>针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</p>
 <table>
 <thead>
 <tr>
@@ -809,6 +810,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
