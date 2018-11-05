@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Spark tuning," />
 
 
 
@@ -94,16 +94,18 @@
 
 
 
-<meta name="description" content="There is no royal road to learning.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="云和月">
-<meta property="og:url" content="https://github.com/wtx626/tags/docker/index.html">
+<meta name="description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
+<meta name="keywords" content="Spark tuning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于回归模型的Spark任务性能分析方法">
+<meta property="og:url" content="https://github.com/wtx626/2018/11/05/基于回归模型的Spark任务性能分析方法/index.html">
 <meta property="og:site_name" content="云和月">
-<meta property="og:description" content="There is no royal road to learning.">
+<meta property="og:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-05T09:43:34.460Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="云和月">
-<meta name="twitter:description" content="There is no royal road to learning.">
+<meta name="twitter:title" content="基于回归模型的Spark任务性能分析方法">
+<meta name="twitter:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
 
 
 
@@ -132,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/tags/docker/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2018/11/05/基于回归模型的Spark任务性能分析方法/"/>
 
 
 
 
 
-  <title>标签: docker | 云和月</title>
+  <title>基于回归模型的Spark任务性能分析方法 | 云和月</title>
   
 
 
@@ -163,7 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -257,54 +259,169 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>docker<small>标签</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/wtx626/2018/11/05/基于回归模型的Spark任务性能分析方法/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tianxiong Wu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/upload/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="云和月">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/10/31/sandbox-hdp-Docker问题总结/" itemprop="url">
-              
-                <span itemprop="name">安装sandbox-hdp Docker问题总结</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">基于回归模型的Spark任务性能分析方法</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-10-31T14:51:36+08:00"
-              content="2017-10-31" >
-          10-31
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-05T16:25:56+08:00">
+                2018-11-05
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>&emsp;&emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。<br>&emsp;&emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。</p>
+<h2 id="系统性能数据"><a href="#系统性能数据" class="headerlink" title="系统性能数据"></a>系统性能数据</h2><h3 id="集群资源消耗"><a href="#集群资源消耗" class="headerlink" title="集群资源消耗"></a>集群资源消耗</h3><p>&emsp;&emsp;下面指标由Ganglia采集</p>
+<ul>
+<li>cpu：集群cpu使用百分比；</li>
+<li>io：集群读取速度平均值；</li>
+<li>network：集群网络丢包率；</li>
+<li>disk：集群磁盘使用百分比；</li>
+<li>memory：集群内存使用百分比；</li>
+<li>load：集群负载。</li>
+</ul>
+<p>&emsp;&emsp;我们定义上面组成第i个作业的资源消耗向量为</p>
+<p>$$<br>\alpha<em>{i}(\alpha</em>{cpu},\alpha<em>{io},\alpha</em>{network},\alpha<em>{disk},\alpha</em>{mem},\alpha_{load})<br>$$</p>
+<h3 id="作业运行效率"><a href="#作业运行效率" class="headerlink" title="作业运行效率"></a>作业运行效率</h3><p>&emsp;&emsp;下面指标从SHS读取</p>
+<ul>
+<li>ComTime：任务executor平均计算时间占总运行时间百分比；</li>
+<li>ShuffleTime：任务shuffle 阶段平均时间占总时间百分比 ；</li>
+<li>ShuffleBytes：任务Shuffle阶段平均读写大小（bytes）；</li>
+<li>GCTime： 任务GC阶段平均时间占总时间百分比；</li>
+<li>TotalTime：任务总运行时间（ms）；</li>
+<li>ResultSTime：任务结果序列化时间占总运行时间百分比。</li>
+</ul>
+<p>&emsp;&emsp;我们定义上面组成第i个作业运行效率向量为<br>$$<br>\beta<em>{i}(\beta</em>{ComTime},\beta<em>{ShuffleTime},\beta</em>{ShuffleBytes},\beta<em>{GCTime},\beta</em>{TotalTime},\beta<em>{ResultSTime})<br>$$<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上12个指标共同组成了系统性能向量<br>$$<br>\gamma</em>{i}(\alpha<em>{i},\beta</em>{i})<br>$$</p>
+<h2 id="对作业类型进行分类"><a href="#对作业类型进行分类" class="headerlink" title="对作业类型进行分类"></a>对作业类型进行分类</h2><p>&emsp;&emsp;因为在相同配置参数环境下，不同类型的作业会表现出不同的资源消耗以及不同的性能，所以该评估模型首先对作业类型进行分类，这里简单的分为两类IO型和非IO型。<br>&emsp;&emsp;这里选用了K-means聚类算法，将系统性能向量集合Ｘ，已知偏IO密集型任务系统性能向量集Ｙ，已知非IO密集型任务系统性能向量集Z和聚类簇数K<a href="这里简单的设为K=2">^K=2</a>作为输入。X、Y和Z中元素为历史任务的系统性能向量$\gamma_{i}$</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spark-tuning/" rel="tag"># Spark tuning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/" rel="next" title="Spark Performance Monitor Tool Dr.Elephant">
+                <i class="fa fa-chevron-left"></i> Spark Performance Monitor Tool Dr.Elephant
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -312,6 +429,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -332,8 +453,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/upload/photo.jpg"
@@ -432,6 +562,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统性能数据"><span class="nav-number">2.</span> <span class="nav-text">系统性能数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集群资源消耗"><span class="nav-number">2.1.</span> <span class="nav-text">集群资源消耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业运行效率"><span class="nav-number">2.2.</span> <span class="nav-text">作业运行效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对作业类型进行分类"><span class="nav-number">3.</span> <span class="nav-text">对作业类型进行分类</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -552,10 +698,10 @@
 
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
