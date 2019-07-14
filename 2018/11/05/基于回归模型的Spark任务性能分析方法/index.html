@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="云和月">
 <meta property="og:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-05T09:43:34.460Z">
+<meta property="og:updated_time" content="2018-11-15T13:27:39.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于回归模型的Spark任务性能分析方法">
 <meta name="twitter:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
@@ -351,7 +351,7 @@
 <li>load：集群负载。</li>
 </ul>
 <p>&emsp;&emsp;我们定义上面组成第i个作业的资源消耗向量为</p>
-<p>$$<br>\alpha<em>{i}(\alpha</em>{cpu},\alpha<em>{io},\alpha</em>{network},\alpha<em>{disk},\alpha</em>{mem},\alpha_{load})<br>$$</p>
+<p>$$<br>\alpha_{i}(\alpha_{cpu},\alpha_{io},\alpha_{network},\alpha_{disk},\alpha_{memory},\alpha_{load})<br>$$</p>
 <h3 id="作业运行效率"><a href="#作业运行效率" class="headerlink" title="作业运行效率"></a>作业运行效率</h3><p>&emsp;&emsp;下面指标从SHS读取</p>
 <ul>
 <li>ComTime：任务executor平均计算时间占总运行时间百分比；</li>
@@ -361,8 +361,27 @@
 <li>TotalTime：任务总运行时间（ms）；</li>
 <li>ResultSTime：任务结果序列化时间占总运行时间百分比。</li>
 </ul>
-<p>&emsp;&emsp;我们定义上面组成第i个作业运行效率向量为<br>$$<br>\beta<em>{i}(\beta</em>{ComTime},\beta<em>{ShuffleTime},\beta</em>{ShuffleBytes},\beta<em>{GCTime},\beta</em>{TotalTime},\beta<em>{ResultSTime})<br>$$<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上12个指标共同组成了系统性能向量<br>$$<br>\gamma</em>{i}(\alpha<em>{i},\beta</em>{i})<br>$$</p>
+<p>&emsp;&emsp;我们定义上面组成第i个作业运行效率向量为</p>
+<p>$$<br>\beta_{i}(\beta_{ComTime},\beta_{ShuffleTime},\beta_{ShuffleBytes},\beta_{GCTime},\beta_{TotalTime},\beta_{ResultSTime})<br>$$</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上12个指标共同组成了系统性能向量</p>
+<p>$$<br>\gamma_{i}(\alpha_{i},\beta_{i})<br>$$</p>
 <h2 id="对作业类型进行分类"><a href="#对作业类型进行分类" class="headerlink" title="对作业类型进行分类"></a>对作业类型进行分类</h2><p>&emsp;&emsp;因为在相同配置参数环境下，不同类型的作业会表现出不同的资源消耗以及不同的性能，所以该评估模型首先对作业类型进行分类，这里简单的分为两类IO型和非IO型。<br>&emsp;&emsp;这里选用了K-means聚类算法，将系统性能向量集合Ｘ，已知偏IO密集型任务系统性能向量集Ｙ，已知非IO密集型任务系统性能向量集Z和聚类簇数K<a href="这里简单的设为K=2">^K=2</a>作为输入。X、Y和Z中元素为历史任务的系统性能向量$\gamma_{i}$</p>
+<h2 id="对作业进行评分"><a href="#对作业进行评分" class="headerlink" title="对作业进行评分"></a>对作业进行评分</h2><ul>
+<li>目标任务性能向量$\gamma_{t}$：每一维度代表任务t在该维度的性能记录值;</li>
+<li>维度评价分数向量$Score_{t}$ ： 每一维度评价分数值;</li>
+<li>权重向量$\omega_{t}$： 对于不同的任务，在进行最后的综合分数评定时，不同的性能指标的重要性不同，所以定义权重向量量化各个性能指标的重要性大小。</li>
+</ul>
+<p>&emsp;&emsp;有如下定义<br>$$<br>Score_{t_{j}}：对应分数向量的每一维度\\<br>\omega_{t_{j}}:对应权重向量的每一维度<br>$$</p>
+<p>&emsp;&emsp;最终评分<br>$$<br> FS_t＝Score_{t}*\omega_{t}<br>$$</p>
+<h3 id="维度评价分数向量"><a href="#维度评价分数向量" class="headerlink" title="维度评价分数向量"></a>维度评价分数向量</h3><p>计算公式</p>
+<p>$$<br>Score_{t_{j}}=\frac{M_{j}-\gamma_{t_{j}}}{M_{j}-B_{j}}*60<br>$$</p>
+<ul>
+<li>$M_{j}$：历史任务中j维度下最差性能记录值 ；</li>
+<li>$B_{j}$：历史任务中默认配置下任务的j维度性能记录值；</li>
+<li>$\gamma_{t{j}}$：目标任务t 的j维度下性能记录值。</li>
+</ul>
+<h3 id="权重向量"><a href="#权重向量" class="headerlink" title="权重向量"></a>权重向量</h3><p>&emsp;&emsp;$\omega_{t}$的初始值由任务t的类型确定。初始值反映的是任务t所属类型下，大部分任务的性能瓶颈。</p>
+<p>$$<br>if  \gamma_{t_{j}}=0 \\<br>\omega_{t_{TotalTime}}=\omega_{t_{TotalTime}}+\omega_{t_{j}}\\<br>else \\<br> \omega_{t_{j}}=\omega_{t_{j}}+(\frac{\gamma_{t_{j}}}{\sum_{i=0}^{11} \gamma_{t_{i}} }-\omega_{t_{j}})*\epsilon<br>$$</p>
 
       
     </div>
@@ -572,7 +591,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统性能数据"><span class="nav-number">2.</span> <span class="nav-text">系统性能数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集群资源消耗"><span class="nav-number">2.1.</span> <span class="nav-text">集群资源消耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业运行效率"><span class="nav-number">2.2.</span> <span class="nav-text">作业运行效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对作业类型进行分类"><span class="nav-number">3.</span> <span class="nav-text">对作业类型进行分类</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统性能数据"><span class="nav-number">2.</span> <span class="nav-text">系统性能数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集群资源消耗"><span class="nav-number">2.1.</span> <span class="nav-text">集群资源消耗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作业运行效率"><span class="nav-number">2.2.</span> <span class="nav-text">作业运行效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对作业类型进行分类"><span class="nav-number">3.</span> <span class="nav-text">对作业类型进行分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对作业进行评分"><span class="nav-number">4.</span> <span class="nav-text">对作业进行评分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#维度评价分数向量"><span class="nav-number">4.1.</span> <span class="nav-text">维度评价分数向量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权重向量"><span class="nav-number">4.2.</span> <span class="nav-text">权重向量</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -595,7 +614,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

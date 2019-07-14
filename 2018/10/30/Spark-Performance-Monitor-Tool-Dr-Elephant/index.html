@@ -103,7 +103,8 @@
 <meta property="og:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/drelephant-arch.png">
-<meta property="og:updated_time" content="2018-11-02T07:15:15.713Z">
+<meta property="og:image" content="https://github.com/wtx626/2018/10/30/Spark-Performance-Monitor-Tool-Dr-Elephant/Dr.-Elephant-sourcecode-overall.png">
+<meta property="og:updated_time" content="2018-11-16T11:37:35.631Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark Performance Monitor Tool Dr.Elephant">
 <meta name="twitter:description" content="引言&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;目前Spark的应用非常广泛，但由于Spark推出的时间不是很长，针对Spark的优化往往靠开发人员的经验，公司内部为了帮助开发人员了解和优化他们的流程，不得不组织培训来告诉他们如何优化自己的任务，但这并没有真正解决我们的问题。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;">
@@ -350,6 +351,7 @@
 <li>存储和展示：MySQL 和 WebUI<br><img src="./drelephant-arch.png" alt="drelephant-arch"></li>
 </ul>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dr.Elephant定期从Hadoop平台的YARN资源管理中心获取近期所有的任务，这些任务既包含成功的任务，也包含哪些失败的任务。每个任务的元数据，例如任务计数器、配置信息以及运行信息都可以从Hadoop平台的历史任务服务端获取到。一旦获取到了任务的元数据，Dr.Elephant就基于这些元数据运行启发式算法，然后会产生一份该启发式算法对该任务性能的诊断报告。根据每个任务的执行情况，这份报告会为该任务标记一个待优化的严重性级别。严重性级别一共分为五级，报告会对该任务产生一个级别的定位，并通过级别来表明该任务中存在的性能问题的严重程度。</p>
+<h2 id="源码整体流程"><a href="#源码整体流程" class="headerlink" title="源码整体流程"></a>源码整体流程</h2><p><img src="./Dr.-Elephant-sourcecode-overall.png" alt="Dr.-Elephant-sourcecode-overall.png"></p>
 <h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;针对Spark作业，Dr. Elephant会从五个方面来进行综合评价<code>Spark Configuration</code>、<code>Spark Executor</code>、<code>Job</code>、<code>Stage</code>和<code>GC</code>层面。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所有的评价指标最后都划归到五个级别，如下表</p>
 <table>
 <thead>
@@ -420,6 +422,33 @@
 <td style="text-align:center">true</td>
 <td style="text-align:center">fasle</td>
 <td style="text-align:center">SEVERE</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>拟增加评价指标，定义单节点资源为$Y(yarnNodeManagerCpuCores,yarnNodemanagerMemory)$分别表示集群节点所管理的cpu核数和内存大小，Spark作业申请资源为$E(executorCores,executorMemory)$，有如下定义</li>
+</ul>
+<p>$$<br>从cpu角度出发单节点可以分配的Executor个数cpuExecutorNums = \frac{Y_1}{E_1} \\<br>从memory角度出发单节点可以分配的Executor个数memExecutorNums= \frac{Y_2}{E_2} \\<br>skewRadio=\frac{cpuExecutorNums}{memExecutorNums}<br>$$</p>
+<p>默认的严重程度指标如下所示</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">skewRadio</th>
+<th style="text-align:center">&gt;=2</th>
+<th style="text-align:center">&gt;=1.75</th>
+<th style="text-align:center">&gt;=1.5</th>
+<th style="text-align:center">&gt;=1.25</th>
+<th style="text-align:center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">严重程度</td>
+<td style="text-align:center">CRITICAL</td>
+<td style="text-align:center">SEVERE</td>
+<td style="text-align:center">MODERATE</td>
+<td style="text-align:center">LOW</td>
+<td style="text-align:center">NONE</td>
 </tr>
 </tbody>
 </table>
@@ -787,7 +816,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">3.1.</span> <span class="nav-text">Spark Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Executor-Metrics"><span class="nav-number">3.2.</span> <span class="nav-text">Spark Executor Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Stage-Metrics"><span class="nav-number">3.3.</span> <span class="nav-text">Spark Stage Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Job-Metrics"><span class="nav-number">3.4.</span> <span class="nav-text">Spark Job Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Executor-GC"><span class="nav-number">3.5.</span> <span class="nav-text">Executor GC</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统架构"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码整体流程"><span class="nav-number">3.</span> <span class="nav-text">源码整体流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#评价指标"><span class="nav-number">4.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Configuration"><span class="nav-number">4.1.</span> <span class="nav-text">Spark Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Executor-Metrics"><span class="nav-number">4.2.</span> <span class="nav-text">Spark Executor Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Stage-Metrics"><span class="nav-number">4.3.</span> <span class="nav-text">Spark Stage Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Job-Metrics"><span class="nav-number">4.4.</span> <span class="nav-text">Spark Job Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Executor-GC"><span class="nav-number">4.5.</span> <span class="nav-text">Executor GC</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -810,7 +839,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
