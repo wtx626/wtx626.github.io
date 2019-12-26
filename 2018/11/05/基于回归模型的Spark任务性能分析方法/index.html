@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -39,7 +39,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -73,21 +73,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Spark tuning," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Spark tuning,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
 
 
 
@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="云和月">
 <meta property="og:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-15T13:27:39.343Z">
+<meta property="og:updated_time" content="2018-11-15T13:27:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于回归模型的Spark任务性能分析方法">
 <meta name="twitter:description" content="引言&amp;emsp;&amp;emsp;本文主要介绍了一种Spark作业的性能评估方法，首先对作业进行分类，主要分为IO型和非IO型；之后对不同的作业类型采取不同的分量权重进行打分，由分数高低来评价作业性能。&amp;emsp;&amp;emsp;评估的数据来源分为集群资源消耗和Spark作业运行效率。前者使用Ganglia进行收集，后者从Spark History Server（SHS）中读取Spark作业运行日志数据。">
@@ -134,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2018/11/05/基于回归模型的Spark任务性能分析方法/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2018/11/05/基于回归模型的Spark任务性能分析方法/">
 
 
 
@@ -174,7 +174,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">云和月</span>
         <span class="logo-line-after"><i></i></span>
@@ -204,7 +204,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -214,7 +214,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -224,7 +224,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -234,7 +234,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -277,7 +277,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/upload/photo.jpg">
     </span>
 
@@ -365,7 +365,7 @@
 <p>$$<br>\beta_{i}(\beta_{ComTime},\beta_{ShuffleTime},\beta_{ShuffleBytes},\beta_{GCTime},\beta_{TotalTime},\beta_{ResultSTime})<br>$$</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上12个指标共同组成了系统性能向量</p>
 <p>$$<br>\gamma_{i}(\alpha_{i},\beta_{i})<br>$$</p>
-<h2 id="对作业类型进行分类"><a href="#对作业类型进行分类" class="headerlink" title="对作业类型进行分类"></a>对作业类型进行分类</h2><p>&emsp;&emsp;因为在相同配置参数环境下，不同类型的作业会表现出不同的资源消耗以及不同的性能，所以该评估模型首先对作业类型进行分类，这里简单的分为两类IO型和非IO型。<br>&emsp;&emsp;这里选用了K-means聚类算法，将系统性能向量集合Ｘ，已知偏IO密集型任务系统性能向量集Ｙ，已知非IO密集型任务系统性能向量集Z和聚类簇数K<a href="这里简单的设为K=2">^K=2</a>作为输入。X、Y和Z中元素为历史任务的系统性能向量$\gamma_{i}$</p>
+<h2 id="对作业类型进行分类"><a href="#对作业类型进行分类" class="headerlink" title="对作业类型进行分类"></a>对作业类型进行分类</h2><p>&emsp;&emsp;因为在相同配置参数环境下，不同类型的作业会表现出不同的资源消耗以及不同的性能，所以该评估模型首先对作业类型进行分类，这里简单的分为两类IO型和非IO型。<br>&emsp;&emsp;这里选用了K-means聚类算法，将系统性能向量集合Ｘ，已知偏IO密集型任务系统性能向量集Ｙ，已知非IO密集型任务系统性能向量集Z和聚类簇数K[^K=2]作为输入。X、Y和Z中元素为历史任务的系统性能向量$\gamma_{i}$<br>[^K=2]: 这里简单的设为K=2</p>
 <h2 id="对作业进行评分"><a href="#对作业进行评分" class="headerlink" title="对作业进行评分"></a>对作业进行评分</h2><ul>
 <li>目标任务性能向量$\gamma_{t}$：每一维度代表任务t在该维度的性能记录值;</li>
 <li>维度评价分数向量$Score_{t}$ ： 每一维度评价分数值;</li>
@@ -473,7 +473,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -484,9 +484,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/upload/photo.jpg"
-               alt="Tianxiong Wu" />
+          <img class="site-author-image" itemprop="image" src="/upload/photo.jpg" alt="Tianxiong Wu">
           <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
            
               <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
@@ -611,7 +609,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

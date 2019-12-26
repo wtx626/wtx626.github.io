@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -39,7 +39,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -73,21 +73,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="-Spark 源码调试," />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="-Spark 源码调试,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
 
 
 
@@ -113,7 +113,7 @@
 <meta property="og:image" content="https://github.com/wtx626/image/blob/master/9.jpg?raw=true">
 <meta property="og:image" content="https://github.com/wtx626/image/blob/master/10.jpg?raw=true">
 <meta property="og:image" content="https://github.com/wtx626/image/blob/master/11.jpg?raw=true">
-<meta property="og:updated_time" content="2017-10-29T07:49:31.189Z">
+<meta property="og:updated_time" content="2017-10-29T07:49:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content=" Spark源码分析调试环境搭建">
 <meta name="twitter:description" content="目前常用的Spark版本有三种Cloudera、HDP和Apache，源码的获取方式可以在各自官网下载。本文选择Apache版本。 搭建环境所需要的工具如下：  CentOS 7 maven 3.5.0 Java 1.8.0 Scala 2.12.2 IntelliJ IDEA2017.1.2  本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。 下载源码首先将apa">
@@ -146,7 +146,7 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2017/10/26/Spark源码分析调试环境搭建/">
 
 
 
@@ -186,7 +186,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">云和月</span>
         <span class="logo-line-after"><i></i></span>
@@ -216,7 +216,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -226,7 +226,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -236,7 +236,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -246,7 +246,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -289,7 +289,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/upload/photo.jpg">
     </span>
 
@@ -362,46 +362,47 @@
 <li>IntelliJ IDEA2017.1.2</li>
 </ul>
 <p>本人选择在服务器上进行编译和调试，机器配置为至强CPU（56核）、内存256G。</p>
-<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先将<a href="http://link.zhihu.com/?target=https%3A//github.com/apache/spark" target="_blank" rel="external">apache/spark</a> fork到自己的github仓库，接着再IDEA上通过</p>
+<h2 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h2><p>首先将<a href="http://link.zhihu.com/?target=https%3A//github.com/apache/spark" target="_blank" rel="noopener">apache/spark</a> fork到自己的github仓库，接着再IDEA上通过</p>
 <blockquote>
 <p>VCS-&gt;Checkout from Version Control-&gt;Github 中选择刚刚fork下来到本地</p>
 </blockquote>
-<h2 id="配置本地maven"><a href="#配置本地maven" class="headerlink" title="配置本地maven"></a>配置本地maven</h2><p>本文选择使用自己搭建的maven仓库，Spark源码自带的maven会从官方镜像上下载所需的依赖，此步骤会比较耗时，设置为本地maven仓库后，速度会大幅提升。设置方法如下图所示<br><img src="https://github.com/wtx626/image/blob/master/1.jpg?raw=true" alt=""></p>
+<h2 id="配置本地maven"><a href="#配置本地maven" class="headerlink" title="配置本地maven"></a>配置本地maven</h2><p>本文选择使用自己搭建的maven仓库，Spark源码自带的maven会从官方镜像上下载所需的依赖，此步骤会比较耗时，设置为本地maven仓库后，速度会大幅提升。设置方法如下图所示<br><img src="https://github.com/wtx626/image/blob/master/1.jpg?raw=true" alt></p>
 <h2 id="编译Spark源码"><a href="#编译Spark源码" class="headerlink" title="编译Spark源码"></a>编译Spark源码</h2><p>选择的最新版的Spark，目前是2.3.0。编译Spark源码，使用自己安装的maven进行编译，其中-T参数是设置编译的线程数，这里设置的是20</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mvn -T -DskipTests clean package</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mvn -T -DskipTests clean package</span><br></pre></td></tr></table></figure>
+
 <p>经过12分钟的等待，Spark源码编译完成，如下图所示<br><img src="https://github.com/wtx626/image/blob/master/2.jpg?raw=true" alt="2"></p>
-<p> 接着可以通过运行下spark-shell来测试一下编译结果<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ./bin/spark-shell</div></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/wtx626/image/blob/master/3.jpg?raw=true" alt=""></p>
+<p> 接着可以通过运行下spark-shell来测试一下编译结果<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./bin/spark-shell</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://github.com/wtx626/image/blob/master/3.jpg?raw=true" alt></p>
 <h2 id="运行Spark源码自带的实例程序"><a href="#运行Spark源码自带的实例程序" class="headerlink" title="运行Spark源码自带的实例程序"></a>运行Spark源码自带的实例程序</h2><p>由于大多数程序都是从hello world开始的，对应的，Spark的第一个程序为wordcount，我们选择调试JavaWordCount。</p>
-<p>打开JavaWordCount程序<br><img src="https://github.com/wtx626/image/blob/master/4.jpg?raw=true" alt=""></p>
+<p>打开JavaWordCount程序<br><img src="https://github.com/wtx626/image/blob/master/4.jpg?raw=true" alt></p>
 <p>在代码编辑区右键选择</p>
 <blockquote>
 <p>Create ‘JavaWordCount.main()’…</p>
 </blockquote>
-<p>设置如下图所示<br><img src="https://github.com/wtx626/image/blob/master/5.jpg?raw=true" alt=""></p>
+<p>设置如下图所示<br><img src="https://github.com/wtx626/image/blob/master/5.jpg?raw=true" alt></p>
 <p>其中</p>
 <blockquote>
 <p>VM options: -Dspark.master=local<br>Program arguments:/home/spark-sourcecode/examples/src/main/resources/people.txt</p>
 </blockquote>
 <p>保存运行配置，这样直接运行会出现以下两个错误，缺失flume sink</p>
 <ul>
-<li>缺失flume sink<img src="https://github.com/wtx626/image/blob/master/6.jpg?raw=true" alt=""></li>
+<li>缺失flume sink<img src="https://github.com/wtx626/image/blob/master/6.jpg?raw=true" alt></li>
 </ul>
 <p>由于我本机问题已经解决，上图从网上复制。</p>
 <p>解决方法是在</p>
 <blockquote>
 <p>View-&gt;Tool Windows-&gt;Maven Projects</p>
 </blockquote>
-<p>在Spark Project External Flume Sink上右键选择Generate Sources and Update Folders<br><img src="https://github.com/wtx626/image/blob/master/7.jpg?raw=true" alt=""></p>
+<p>在Spark Project External Flume Sink上右键选择Generate Sources and Update Folders<br><img src="https://github.com/wtx626/image/blob/master/7.jpg?raw=true" alt></p>
 <ul>
-<li>缺少Spark环境Jars包<img src="https://github.com/wtx626/image/blob/master/8.jpg?raw=true" alt=""></li>
+<li>缺少Spark环境Jars包<img src="https://github.com/wtx626/image/blob/master/8.jpg?raw=true" alt></li>
 </ul>
 <p>解决方案如下：</p>
 <blockquote>
-<p>File -&gt; Project Structure -&gt; Modules -&gt; spark-examples_2.11 -&gt; Dependencies 添加依赖 jars -&gt; {spark dir}/spark/assembly/target/scala-2.11/jars/<br><img src="https://github.com/wtx626/image/blob/master/9.jpg?raw=true" alt=""></p>
+<p>File -&gt; Project Structure -&gt; Modules -&gt; spark-examples_2.11 -&gt; Dependencies 添加依赖 jars -&gt; {spark dir}/spark/assembly/target/scala-2.11/jars/<br><img src="https://github.com/wtx626/image/blob/master/9.jpg?raw=true" alt></p>
 </blockquote>
-<p>接着成功运行JavaWordCount<br><img src="https://github.com/wtx626/image/blob/master/10.jpg?raw=true" alt=""></p>
-<h2 id="调试例子程序"><a href="#调试例子程序" class="headerlink" title="调试例子程序"></a>调试例子程序</h2><p><img src="https://github.com/wtx626/image/blob/master/11.jpg?raw=true" alt=""></p>
+<p>接着成功运行JavaWordCount<br><img src="https://github.com/wtx626/image/blob/master/10.jpg?raw=true" alt></p>
+<h2 id="调试例子程序"><a href="#调试例子程序" class="headerlink" title="调试例子程序"></a>调试例子程序</h2><p><img src="https://github.com/wtx626/image/blob/master/11.jpg?raw=true" alt></p>
 <p>接下来就可以看到Spark程序运行时每个变量的值变化，方便我们对Spark源码的设计进行分析。</p>
 <p>不过当我们修改了Spark源码后，我们得使用前面的编译命令对其进行重新编程生成。</p>
 
@@ -495,7 +496,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -506,9 +507,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/upload/photo.jpg"
-               alt="Tianxiong Wu" />
+          <img class="site-author-image" itemprop="image" src="/upload/photo.jpg" alt="Tianxiong Wu">
           <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
            
               <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
@@ -633,7 +632,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

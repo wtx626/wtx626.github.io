@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -39,7 +39,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -73,21 +73,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
 
 
 
@@ -105,7 +105,7 @@
 <meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image002.png">
 <meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image004.png">
 <meta property="og:image" content="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/image005.png">
-<meta property="og:updated_time" content="2018-11-02T02:11:11.696Z">
+<meta property="og:updated_time" content="2018-11-02T02:11:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark内存管理总结">
 <meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;一个Spark作业主要启动Driver和Executor两类J">
@@ -138,7 +138,7 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2018/01/04/Spark-Memory-Manage/">
 
 
 
@@ -178,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">云和月</span>
         <span class="logo-line-after"><i></i></span>
@@ -208,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -218,7 +218,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -228,7 +228,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -238,7 +238,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -281,7 +281,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/upload/photo.jpg">
     </span>
 
@@ -345,7 +345,7 @@
 
       
         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本文主要总结Spark 2.X的内存管理，Spark自从1.6以后，提出了一个新的内存管理模型Unified Memory Management。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一个Spark作业主要启动Driver和Executor两类JVM进程，Driver对内存的管理较为简单，主要负责Spark作业的调度，Stage的划分、任务的分发、状态的监听等，Executor则负责具体的计算任务，涉及到计算、执行结果回传和持久化RDD等功能。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spark作为内存计算框架，创新的引入了堆外内存，这种机制让Spark突破JVM内存的管理，直接使用系统内存，极大的提高了内存使用，不过一个显著的问题就是当系统内存不太够的时候，会造成主机也无法正常工作。</p>
-<h3 id="堆内和堆外内存"><a href="#堆内和堆外内存" class="headerlink" title="堆内和堆外内存"></a>堆内和堆外内存</h3><p>Spark Executor的堆外内存示意图如下所示<br><img src="./image001.png" alt=""></p>
+<h3 id="堆内和堆外内存"><a href="#堆内和堆外内存" class="headerlink" title="堆内和堆外内存"></a>堆内和堆外内存</h3><p>Spark Executor的堆外内存示意图如下所示<br><img src="./image001.png" alt></p>
 <h4 id="堆内存"><a href="#堆内存" class="headerlink" title="堆内存"></a>堆内存</h4><p>控制参数</p>
 <ul>
 <li>executor-memory</li>
@@ -363,7 +363,7 @@
 <li>小内存情况，作业GC因为内存不够导致非常频繁；</li>
 <li>大内存情况，如ML作业一个executor 十几甚至几十G，也容易GC，则使用off-heap可能有更好效果。（需要实际验证）</li>
 </ul>
-<h3 id="内存空间"><a href="#内存空间" class="headerlink" title="内存空间"></a>内存空间</h3><h4 id="Spark-1-6以前静态内存管理"><a href="#Spark-1-6以前静态内存管理" class="headerlink" title="Spark 1.6以前静态内存管理"></a>Spark 1.6以前静态内存管理</h4><p>Spark 1.6以前将内存的区块划分设为固定大小，如下图所示<br><img src="./image002.png" alt=""><br>我们关心的存储内存和执行内存大小分别如下</p>
+<h3 id="内存空间"><a href="#内存空间" class="headerlink" title="内存空间"></a>内存空间</h3><h4 id="Spark-1-6以前静态内存管理"><a href="#Spark-1-6以前静态内存管理" class="headerlink" title="Spark 1.6以前静态内存管理"></a>Spark 1.6以前静态内存管理</h4><p>Spark 1.6以前将内存的区块划分设为固定大小，如下图所示<br><img src="./image002.png" alt><br>我们关心的存储内存和执行内存大小分别如下</p>
 <blockquote>
 <p>可用的存储内存 = systemMaxMemory * spark.storage.memoryFraction * spark.storage.safetyFraction<br> 可用的执行内存 = systemMaxMemory * spark.shuffle.memoryFraction * spark.shuffle.safetyFraction</p>
 </blockquote>
@@ -467,7 +467,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -478,9 +478,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/upload/photo.jpg"
-               alt="Tianxiong Wu" />
+          <img class="site-author-image" itemprop="image" src="/upload/photo.jpg" alt="Tianxiong Wu">
           <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
            
               <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
@@ -605,7 +603,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

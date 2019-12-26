@@ -6,10 +6,10 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
 
 
@@ -20,8 +20,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -39,7 +39,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -73,21 +73,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="Hexo, NexT" />
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
 
 
 
@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="云和月">
 <meta property="og:description" content="最近由于项目需要，将以前的数据流整合，以前提取日志文件采取java程序+kafka+flume+hive的方式对日志实施解析和实时存储，这种方式实现起来太不优雅，故现在将日志解析模块由flume 拦截器来做，使数据管道只需要从flume+hive即可。 开发环境 Java 1.8 Intelij Idea Maven Flume 1.6 Hive 1.2.1  开发步骤新建maven项目完成后，在">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-15T13:23:36.382Z">
+<meta property="og:updated_time" content="2018-11-15T13:23:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="flume自定义拦截器">
 <meta name="twitter:description" content="最近由于项目需要，将以前的数据流整合，以前提取日志文件采取java程序+kafka+flume+hive的方式对日志实施解析和实时存储，这种方式实现起来太不优雅，故现在将日志解析模块由flume 拦截器来做，使数据管道只需要从flume+hive即可。 开发环境 Java 1.8 Intelij Idea Maven Flume 1.6 Hive 1.2.1  开发步骤新建maven项目完成后，在">
@@ -133,7 +133,7 @@
 
 
 
-  <link rel="canonical" href="https://github.com/wtx626/2017/12/26/flume-custom-interceptor/"/>
+  <link rel="canonical" href="https://github.com/wtx626/2017/12/26/flume-custom-interceptor/">
 
 
 
@@ -173,7 +173,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">云和月</span>
         <span class="logo-line-after"><i></i></span>
@@ -203,7 +203,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -213,7 +213,7 @@
         <li class="menu-item menu-item-about">
           <a href="/about/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
             
             关于
           </a>
@@ -223,7 +223,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -233,7 +233,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -276,7 +276,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Tianxiong Wu">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/upload/photo.jpg">
     </span>
 
@@ -347,19 +347,27 @@
 <li>Flume 1.6</li>
 <li>Hive 1.2.1</li>
 </ul>
-<h2 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h2><p>新建maven项目完成后，在pom.xml中加入flume依赖<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flume<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flume-ng-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">           <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>接着再<code>project name-&gt;src-&gt;main</code>下新建包名和自定义拦截器类，同时让其<code>implements interceptor</code>，接着实现拦截器中的方法，主要代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> csri.log.interceptor;</div><div class="line"><span class="keyword">import</span> org.apache.flume.Context;</div><div class="line"><span class="keyword">import</span> org.apache.flume.Event;</div><div class="line"><span class="keyword">import</span> org.apache.flume.interceptor.Interceptor;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * Created with IntelliJ IDEA.</span></div><div class="line"><span class="comment"> * User: wutianxiong</span></div><div class="line"><span class="comment"> * Date: 2017/12/23</span></div><div class="line"><span class="comment"> * Time: 15:30</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WafLogInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Event <span class="title">intercept</span><span class="params">(Event event)</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">        <span class="keyword">byte</span>[] eventBody = event.getBody();</div><div class="line">        <span class="comment">//这里实现对Event body的修改</span></div><div class="line">        event.setBody(modifiedEvent);</div><div class="line">        <span class="keyword">return</span> event;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Event&gt; <span class="title">intercept</span><span class="params">(List&lt;Event&gt; events)</span></span></div><div class="line"><span class="function">    </span>&#123;</div><div class="line">    <span class="comment">//flume按批处理Event，先执行下面的步骤</span></div><div class="line">        <span class="keyword">for</span> (Event event : events)&#123;</div><div class="line">            intercept(event);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> events;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">Interceptor</span>.<span class="title">Builder</span></span></div><div class="line"><span class="class">    </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">            <span class="comment">// TODO Auto-generated method stub</span></div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> Interceptor <span class="title">build</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WafLogInterceptor();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h2><p>新建maven项目完成后，在pom.xml中加入flume依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flume<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flume-ng-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接着再<code>project name-&gt;src-&gt;main</code>下新建包名和自定义拦截器类，同时让其<code>implements interceptor</code>，接着实现拦截器中的方法，主要代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> csri.log.interceptor;</span><br><span class="line"><span class="keyword">import</span> org.apache.flume.Context;</span><br><span class="line"><span class="keyword">import</span> org.apache.flume.Event;</span><br><span class="line"><span class="keyword">import</span> org.apache.flume.interceptor.Interceptor;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created with IntelliJ IDEA.</span></span><br><span class="line"><span class="comment"> * User: wutianxiong</span></span><br><span class="line"><span class="comment"> * Date: 2017/12/23</span></span><br><span class="line"><span class="comment"> * Time: 15:30</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WafLogInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Event <span class="title">intercept</span><span class="params">(Event event)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">byte</span>[] eventBody = event.getBody();</span><br><span class="line">        <span class="comment">//这里实现对Event body的修改</span></span><br><span class="line">        event.setBody(modifiedEvent);</span><br><span class="line">        <span class="keyword">return</span> event;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Event&gt; <span class="title">intercept</span><span class="params">(List&lt;Event&gt; events)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    <span class="comment">//flume按批处理Event，先执行下面的步骤</span></span><br><span class="line">        <span class="keyword">for</span> (Event event : events)&#123;</span><br><span class="line">            intercept(event);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> events;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> <span class="keyword">implements</span> <span class="title">Interceptor</span>.<span class="title">Builder</span></span></span><br><span class="line"><span class="class">    </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Interceptor <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WafLogInterceptor();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>上述代码flume会按下面顺序处理</p>
 <blockquote>
 <p>Builder.build -&gt; intercept(List<event> events) -&gt; intercept(Event event)</event></p>
 </blockquote>
-<p>在pom.xml里加入下列build语句<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">source</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">target</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在pom.xml里加入下列build语句</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.7<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>在根目录下输入</p>
 <blockquote>
 <p>mvn clean package</p>
 </blockquote>
 <p>即可完成打包。</p>
-<h2 id="修改flume-conf文件"><a href="#修改flume-conf文件" class="headerlink" title="修改flume conf文件"></a>修改flume conf文件</h2><p>将前面步骤生成的jar放入flume lib目录下，<br>在flume source处增加拦截器设置<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">waf-agent.sources.udp-source.interceptors = wafinterceptor</div><div class="line">waf-agent.sources.udp-source.interceptors.wafinterceptor.type = csri.log.interceptor.WafLogInterceptor$Builder //包名+类名</div></pre></td></tr></table></figure></p>
+<h2 id="修改flume-conf文件"><a href="#修改flume-conf文件" class="headerlink" title="修改flume conf文件"></a>修改flume conf文件</h2><p>将前面步骤生成的jar放入flume lib目录下，<br>在flume source处增加拦截器设置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">waf-agent.sources.udp-source.interceptors = wafinterceptor</span><br><span class="line">waf-agent.sources.udp-source.interceptors.wafinterceptor.type = csri.log.interceptor.WafLogInterceptor$Builder //包名+类名</span><br></pre></td></tr></table></figure>
+
 <p>启动flume ，自定义的拦截器就生效了。<br>经过上面步骤，即可实现一个自定义的拦截器。</p>
 <h2 id="扩展：在flume-source中使用多拦截器"><a href="#扩展：在flume-source中使用多拦截器" class="headerlink" title="扩展：在flume source中使用多拦截器"></a>扩展：在flume source中使用多拦截器</h2><p>由于产生的日志的设备更换，日志的格式由原先的一种升级到10多种，这给适配解析带来了难度，我们通过在source进行相应的过滤，过滤掉新的数据格式日志。<br>Flume可以通过正则拦截器实现过滤，同时flume也支持多拦截器。</p>
 <h3 id="正则拦截器"><a href="#正则拦截器" class="headerlink" title="正则拦截器"></a>正则拦截器</h3><p>在使用 Regex Filtering Interceptor的时候一个属性是excludeEvents</p>
@@ -371,29 +379,41 @@
 <thead>
 <tr>
 <th>Property Name</th>
-<th style="text-align:center">Default</th>
-<th style="text-align:center">Description</th>
+<th align="center">Default</th>
+<th align="center">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>type</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">The component type name has to be regex_filter</td>
+<td align="center">-</td>
+<td align="center">The component type name has to be regex_filter</td>
 </tr>
 <tr>
 <td>regex</td>
-<td style="text-align:center">”.*”</td>
-<td style="text-align:center">Regular expression for matching against events</td>
+<td align="center">”.*”</td>
+<td align="center">Regular expression for matching against events</td>
 </tr>
 <tr>
 <td>excludeEvents</td>
-<td style="text-align:center">false</td>
-<td style="text-align:center">If true, regex determines events to exclude, otherwise regex determines events to include.</td>
+<td align="center">false</td>
+<td align="center">If true, regex determines events to exclude, otherwise regex determines events to include.</td>
 </tr>
-</tbody>
-</table>
-<h3 id="flume-interceptor其他属性"><a href="#flume-interceptor其他属性" class="headerlink" title="flume interceptor其他属性"></a>flume interceptor其他属性</h3><p>flume 通过拦截器可以实现修改或者丢弃相应的event，同时flume也支持链式拦截器，event 通过依次通过各个拦截器，如果被某个拦截器过滤掉，那么将不会被传到下一个拦截器，链式拦截器示例如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">a1.sources = r1</div><div class="line">a1.sinks = k1</div><div class="line">a1.channels = c1</div><div class="line">a1.sources.r1.interceptors = i1 i2</div><div class="line">a1.sources.r1.interceptors.i1.type = org.apache.flume.interceptor.HostInterceptor<span class="variable">$Builder</span></div><div class="line">a1.sources.r1.interceptors.i1.preserveExisting = <span class="literal">false</span></div><div class="line">a1.sources.r1.interceptors.i1.hostHeader = hostname</div><div class="line">a1.sources.r1.interceptors.i2.type = org.apache.flume.interceptor.TimestampInterceptor<span class="variable">$Builder</span></div><div class="line">a1.sinks.k1.filePrefix = FlumeData.%&#123;CollectorHost&#125;.%Y-%m-%d</div><div class="line">a1.sinks.k1.channel = c1</div></pre></td></tr></table></figure></p>
+<tr>
+<td>### flume interceptor其他属性</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td>flume 通过拦截器可以实现修改或者丢弃相应的event，同时flume也支持链式拦截器，event 通过依次通过各个拦截器，如果被某个拦截器过滤掉，那么将不会被传到下一个拦截器，链式拦截器示例如下</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sources.r1.interceptors = i1 i2</span><br><span class="line">a1.sources.r1.interceptors.i1.type = org.apache.flume.interceptor.HostInterceptor<span class="variable">$Builder</span></span><br><span class="line">a1.sources.r1.interceptors.i1.preserveExisting = <span class="literal">false</span></span><br><span class="line">a1.sources.r1.interceptors.i1.hostHeader = hostname</span><br><span class="line">a1.sources.r1.interceptors.i2.type = org.apache.flume.interceptor.TimestampInterceptor<span class="variable">$Builder</span></span><br><span class="line">a1.sinks.k1.filePrefix = FlumeData.%&#123;CollectorHost&#125;.%Y-%m-%d</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
 <p>上面的例子中，event先传递到HostInterceptor,处理之后再传递到TimestampInterceptor。</p>
 
       
@@ -484,7 +504,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -495,9 +515,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="/upload/photo.jpg"
-               alt="Tianxiong Wu" />
+          <img class="site-author-image" itemprop="image" src="/upload/photo.jpg" alt="Tianxiong Wu">
           <p class="site-author-name" itemprop="name">Tianxiong Wu</p>
            
               <p class="site-description motion-element" itemprop="description">There is no royal road to learning.</p>
@@ -602,7 +620,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境"><span class="nav-number">1.</span> <span class="nav-text">开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发步骤"><span class="nav-number">2.</span> <span class="nav-text">开发步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改flume-conf文件"><span class="nav-number">3.</span> <span class="nav-text">修改flume conf文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展：在flume-source中使用多拦截器"><span class="nav-number">4.</span> <span class="nav-text">扩展：在flume source中使用多拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则拦截器"><span class="nav-number">4.1.</span> <span class="nav-text">正则拦截器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flume-interceptor其他属性"><span class="nav-number">4.2.</span> <span class="nav-text">flume interceptor其他属性</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境"><span class="nav-number">1.</span> <span class="nav-text">开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发步骤"><span class="nav-number">2.</span> <span class="nav-text">开发步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改flume-conf文件"><span class="nav-number">3.</span> <span class="nav-text">修改flume conf文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展：在flume-source中使用多拦截器"><span class="nav-number">4.</span> <span class="nav-text">扩展：在flume source中使用多拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则拦截器"><span class="nav-number">4.1.</span> <span class="nav-text">正则拦截器</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -622,7 +640,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>
